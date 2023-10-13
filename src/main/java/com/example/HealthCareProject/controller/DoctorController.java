@@ -15,10 +15,15 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(path = "api/doctor")
 public class DoctorController {
     private DoctorService doctorService;
-
     @Autowired
     public DoctorController(DoctorService doctorService) {
         this.doctorService = doctorService;
+    }
+
+    @GetMapping("/view/{doctorId}")
+    @PreAuthorize("hasRole('DOCTOR')")
+    public ResponseEntity<?> viewDoctorDetails(@PathVariable Long doctorId) {
+        return new ResponseEntity<>(doctorService.viewDoctorDetails(doctorId), HttpStatus.OK);
     }
 
     @PostMapping("/add/userId={userId}")

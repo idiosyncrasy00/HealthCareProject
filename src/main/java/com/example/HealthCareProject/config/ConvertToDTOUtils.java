@@ -4,7 +4,7 @@ import com.example.HealthCareProject.dto.UserDataDTO;
 import com.example.HealthCareProject.entity.UserData;
 
 public class ConvertToDTOUtils {
-    public static UserDataDTO convertToDTO(UserData userData) {
+    public static UserDataDTO convertToUserDataDTO(UserData userData) {
         return UserDataDTO.builder()
                 .id(userData.getId())
                 .username(userData.getUsername())

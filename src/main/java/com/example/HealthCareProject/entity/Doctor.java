@@ -17,8 +17,8 @@ import org.hibernate.annotations.OnDeleteAction;
 )
 public class Doctor {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long doctor_id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
 
     @Column(name="firstName")
     private String firstName;

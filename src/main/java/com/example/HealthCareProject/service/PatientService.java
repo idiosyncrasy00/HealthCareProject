@@ -1,5 +1,6 @@
 package com.example.HealthCareProject.service;
 
+import com.example.HealthCareProject.config.ConvertToDTOUtils;
 import com.example.HealthCareProject.dto.DoctorDTO;
 import com.example.HealthCareProject.dto.PatientDTO;
 import com.example.HealthCareProject.entity.Doctor;
@@ -21,12 +22,11 @@ public class PatientService {
         this.userDataRepository = userDataRepository;
     }
 
-    public PatientDTO.AddPatient addNewPatient(PatientDTO.AddPatient addedPatient, long userId) {
+    public PatientDTO.AddPatientResponse addNewPatient(PatientDTO.AddPatient addedPatient, long userId) {
         //find user
         //find user id?
         UserData userData = userDataRepository.findById(userId)
                 .orElseThrow(() -> new IllegalStateException("user with id " + userId + " does not exist!"));;
-        addedPatient.setUserData(userData);
         //build doctor
         Patient patient = Patient.builder()
                 .firstName(addedPatient.getFirstName())
@@ -36,11 +36,20 @@ public class PatientService {
                 .gender(addedPatient.getGender())
                 .userData(userData).dob(addedPatient.getDob()).build(); //adding userid
         patientRepository.save(patient);
-        return addedPatient;
+
+        PatientDTO.AddPatientResponse response = PatientDTO.AddPatientResponse.builder()
+                .firstName(patient.getFirstName())
+                .lastName(patient.getLastName())
+                .address(patient.getAddress())
+                .gender(patient.getGender())
+                .userDataDTO(ConvertToDTOUtils.convertToUserDataDTO(patient.getUserData()))
+                .dob(patient.getDob())
+                .build();
+        return response;
     }
 
     @Transactional
-    public PatientDTO.EditPatient editPatient(PatientDTO.EditPatient patient, long patientId) {
+    public PatientDTO.EditPatientResponse editPatient(PatientDTO.EditPatient patient, long patientId) {
         //find user id?
         Patient currentPatient = patientRepository.findById(patientId)
                 .orElseThrow(() -> new IllegalStateException("patient with id " + patientId + " does not exist!"));
@@ -49,6 +58,14 @@ public class PatientService {
         currentPatient.setAddress(patient.getAddress());
         currentPatient.setDob(patient.getDob());
         currentPatient.setGender(patient.getGender());
-        return patient;
+
+        PatientDTO.EditPatientResponse response = PatientDTO.EditPatientResponse.builder()
+                .firstName(currentPatient.getFirstName())
+                .lastName(currentPatient.getLastName())
+                .address(currentPatient.getAddress())
+                .gender(currentPatient.getGender())
+                .dob(currentPatient.getDob())
+                .build();
+        return response;
     }
 }

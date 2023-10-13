@@ -36,7 +36,34 @@ public class PatientDTO {
     @Setter
     @AllArgsConstructor
     @NoArgsConstructor
+    public static class AddPatientResponse {
+        private String firstName;
+        private String lastName;
+        private String address;
+        private String gender;
+        private UserDataDTO userDataDTO;
+        private String dob;
+    }
+
+    @Builder
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
     public static class EditPatient {
+        private String firstName;
+        private String lastName;
+        private String address;
+        private String gender;
+        private String dob;
+    }
+
+    @Builder
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class EditPatientResponse {
         private String firstName;
         private String lastName;
         private String address;
