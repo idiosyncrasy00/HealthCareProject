@@ -23,35 +23,36 @@ public class UserDataController {
         this.userDataService = userDataService;
     }
 
-    @GetMapping
+    @GetMapping("/view/all")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<UserData>> getUsersData() {
         return new ResponseEntity<List<UserData>>(userDataService.getUsersData(), HttpStatus.OK);
     }
 
-    @GetMapping("/{email}")
+    @GetMapping("/view/email")
     @PreAuthorize("hasRole('PATIENT') or hasRole('DOCTOR') or hasRole('ADMIN')")
-    public ResponseEntity<Optional<UserData>> getUserDataByEmail(@PathVariable String email) {
+    public ResponseEntity<Optional<UserData>> getUserDataByEmail(@RequestParam("email") String email) {
         return new ResponseEntity<Optional<UserData>>(userDataService.getSingleUserDataByEmail(email), HttpStatus.OK);
     }
 
-    @GetMapping("/id={userId}")
+    @GetMapping("/view/id/")
     @PreAuthorize("hasRole('PATIENT') or hasRole('DOCTOR') or hasRole('ADMIN')")
-    public ResponseEntity<Optional<UserData>> getUserDataByUserDataID(@PathVariable long userId) {
+    public ResponseEntity<Optional<UserData>> getUserDataByUserDataID(@RequestParam("userId") long userId) {
         return new ResponseEntity<Optional<UserData>>(userDataService.getSingleUserDataByUserDataID(userId), HttpStatus.OK);
     }
     @PostMapping
     public ResponseEntity<String> registerUserData(@RequestBody UserData user) {
         return new ResponseEntity<>(userDataService.addNewUserData(user), HttpStatus.OK);
     }
-    @DeleteMapping("/delete/{userId}")
+    @DeleteMapping("/delete")
     @PreAuthorize("hasRole('PATIENT') or hasRole('DOCTOR') or hasRole('ADMIN')")
-    public ResponseEntity<String> deleteUserData(@PathVariable long userId) {
+    public ResponseEntity<String> deleteUserData(@RequestParam("userId") long userId) {
         return new ResponseEntity<String>(userDataService.deleteUserData(userId), HttpStatus.OK);
     }
-    @PutMapping("/update/{userId}")
+    @PutMapping("/update")
     @PreAuthorize("hasRole('PATIENT') or hasRole('DOCTOR') or hasRole('ADMIN')")
-    public ResponseEntity<UserDataDTO.updateUserData> updateUserData(@RequestBody UserDataDTO.updateUserData user, @PathVariable long userId) throws JsonProcessingException {
+    public ResponseEntity<UserDataDTO.updateUserData> updateUserData(@RequestBody UserDataDTO.updateUserData user,
+                                                                     @RequestParam("userId") long userId) throws JsonProcessingException {
         return new ResponseEntity<UserDataDTO.updateUserData>(userDataService.updateUserData(user, userId), HttpStatus.OK);
     }
 }

@@ -21,7 +21,9 @@ public class HealthRecord {
 
     private String bloodType;
     private double height;
+    private String heightUnit;
     private double weight;
+    private String weightUnit;
 
     @OneToOne(cascade = CascadeType.MERGE)
     @OnDelete(action = OnDeleteAction.CASCADE)

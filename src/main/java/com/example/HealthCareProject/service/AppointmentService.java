@@ -50,17 +50,17 @@ public class AppointmentService {
 
     @Transactional
     public Appointment acceptAppointment(long appointmentID) {
-        appointmentRepository.findById(appointmentID).orElseThrow(() -> new IllegalStateException("Appoint with id " + appointmentID + " does not exist!"));
-        Appointment result = appointmentRepository.acceptAppointment(appointmentID);
-        return result;
+        Appointment appointment = appointmentRepository.findById(appointmentID).orElseThrow(() -> new IllegalStateException("Appoint with id " + appointmentID + " does not exist!"));
+        appointment.setStatus(1);
+        return appointment;
 
     }
 
     @Transactional
     public Appointment rejectAppointment(long appointmentID) {
-        appointmentRepository.findById(appointmentID).orElseThrow(() -> new IllegalStateException("Appoint with id " + appointmentID + " does not exist!"));
-        Appointment result = appointmentRepository.rejectAppointment(appointmentID);
-        return result;
+        Appointment appointment = appointmentRepository.findById(appointmentID).orElseThrow(() -> new IllegalStateException("Appoint with id " + appointmentID + " does not exist!"));
+        appointment.setStatus(2);
+        return appointment;
 
     }
 

@@ -8,20 +8,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.*;
 
-@Builder
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
-public class DoctorDTO {
-    private long doctor_id;
-    private String firstName;
-    private String lastName;
-    private String address;
-    private String doctorType;
-    private String gender;
-    private String description;
-    private UserDataDTO userDataDTO;
+public class DoctorDTO extends Doctor {
 
     @Builder
     @Getter

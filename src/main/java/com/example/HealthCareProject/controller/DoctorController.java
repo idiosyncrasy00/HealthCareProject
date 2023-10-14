@@ -20,21 +20,23 @@ public class DoctorController {
         this.doctorService = doctorService;
     }
 
-    @GetMapping("/view/{doctorId}")
-    @PreAuthorize("hasRole('DOCTOR')")
-    public ResponseEntity<?> viewDoctorDetails(@PathVariable Long doctorId) {
+    @GetMapping("/view")
+    @PreAuthorize("hasRole('DOCTOR') or hasRole('PATIENT')")
+    public ResponseEntity<?> viewDoctorDetails(@RequestParam("doctorId") Long doctorId) {
         return new ResponseEntity<>(doctorService.viewDoctorDetails(doctorId), HttpStatus.OK);
     }
 
-    @PostMapping("/add/userId={userId}")
+    @PostMapping("/add")
     @PreAuthorize("hasRole('DOCTOR')")
-    public ResponseEntity<?> registerDoctor(@RequestBody DoctorDTO.AddDoctor doctor, @PathVariable Long userId) {
+    public ResponseEntity<?> registerDoctor(@RequestBody DoctorDTO.AddDoctor doctor,
+                                            @RequestParam("userId") Long userId) {
         return new ResponseEntity<>(doctorService.addNewDoctor(doctor, userId), HttpStatus.OK);
     }
 
-    @PutMapping("/edit/{doctorId}")
+    @PutMapping("/edit")
     @PreAuthorize("hasRole('DOCTOR')")
-    public ResponseEntity<?> editDoctor(@RequestBody DoctorDTO.EditDoctor doctor, @PathVariable long doctorId) {
+    public ResponseEntity<?> editDoctor(@RequestBody DoctorDTO.EditDoctor doctor,
+                                        @RequestParam("doctorId") long doctorId) {
         return new ResponseEntity<>(doctorService.editDoctor(doctor, doctorId), HttpStatus.OK);
     }
 }

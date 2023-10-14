@@ -19,15 +19,15 @@ public class PatientController {
         this.patientService = patientService;
     }
 
-    @PostMapping("/add/userId={userId}")
+    @PostMapping("/add")
     @PreAuthorize("hasRole('PATIENT')")
-    public ResponseEntity<?> registerPatient(@RequestBody PatientDTO.AddPatient patient, @PathVariable Long userId) {
+    public ResponseEntity<?> registerPatient(@RequestBody PatientDTO.AddPatient patient, @RequestParam("userId") Long userId) {
         return new ResponseEntity<>(patientService.addNewPatient(patient, userId), HttpStatus.OK);
     }
 
-    @PutMapping("/edit/{patientId}")
+    @PutMapping("/edit")
     @PreAuthorize("hasRole('PATIENT')")
-    public ResponseEntity<?> editDoctor(@RequestBody PatientDTO.EditPatient patient, @PathVariable long patientId) {
+    public ResponseEntity<?> editDoctor(@RequestBody PatientDTO.EditPatient patient, @RequestParam("patientId") long patientId) {
         return new ResponseEntity<>(patientService.editPatient(patient, patientId), HttpStatus.OK);
     }
 

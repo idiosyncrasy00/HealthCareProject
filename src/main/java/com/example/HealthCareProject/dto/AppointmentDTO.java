@@ -24,6 +24,6 @@ public class AppointmentDTO {
     @NoArgsConstructor
     public static class AppointmentDeletedResponse {
         long id;
-        String message = "Cancel appoint successfully!";
+        String message = "Cancel appointment successfully!";
     }
 }
