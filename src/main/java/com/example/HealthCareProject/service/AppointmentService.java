@@ -1,5 +1,6 @@
 package com.example.HealthCareProject.service;
 
+import com.example.HealthCareProject.config.DateTimeConfig;
 import com.example.HealthCareProject.dto.AppointmentDTO;
 import com.example.HealthCareProject.entity.Appointment;
 import com.example.HealthCareProject.entity.Patient;
@@ -28,8 +29,8 @@ public class AppointmentService {
     }
 
     public Appointment makeAppointment(Appointment appointmentBody) {
-        long patientId = appointmentBody.getPatient_id().getId();
-        long doctorId = appointmentBody.getDoctor_id().getId();
+        long patientId = appointmentBody.getPatient().getId();
+        long doctorId = appointmentBody.getDoctor().getId();
         patientRepository.findById(patientId).orElseThrow(() -> new IllegalStateException("patient with id " + patientId + " does not exist!"));
         doctorRepository.findById(doctorId).orElseThrow(
                 () -> new IllegalStateException("doctor with id " + doctorId + " does not exist!")
@@ -52,6 +53,7 @@ public class AppointmentService {
     public Appointment acceptAppointment(long appointmentID) {
         Appointment appointment = appointmentRepository.findById(appointmentID).orElseThrow(() -> new IllegalStateException("Appoint with id " + appointmentID + " does not exist!"));
         appointment.setStatus(1);
+        appointment.setUpdatedAt(DateTimeConfig.getCurrentDateTime("dd/MM/yyyy - HH:mm:ss"));
         return appointment;
 
     }
@@ -60,6 +62,7 @@ public class AppointmentService {
     public Appointment rejectAppointment(long appointmentID) {
         Appointment appointment = appointmentRepository.findById(appointmentID).orElseThrow(() -> new IllegalStateException("Appoint with id " + appointmentID + " does not exist!"));
         appointment.setStatus(2);
+        appointment.setUpdatedAt(DateTimeConfig.getCurrentDateTime("dd/MM/yyyy - HH:mm:ss"));
         return appointment;
 
     }

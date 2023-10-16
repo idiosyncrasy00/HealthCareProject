@@ -15,33 +15,5 @@ public class HealthRecordDTO {
     private String heightUnit;
     private double weight;
     private String weightUnit;
-    private long patient_id;
-
-    @Builder
-    @Getter
-    @Setter
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class viewHealthRecordDTO {
-        private long id;
-        private String bloodType;
-        private double height;
-        private String heightUnit;
-        private double weight;
-        private String weightUnit;
-        private long patient_id;
-    }
-    @Builder
-    @Getter
-    @Setter
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class EditHealthRecordDTO {
-        private long id;
-        private String bloodType;
-        private double height;
-        private String heightUnit;
-        private double weight;
-        private String weightUnit;
-    }
+    private long patient;
 }

@@ -23,20 +23,20 @@ public class DoctorController {
     @GetMapping("/view")
     @PreAuthorize("hasRole('DOCTOR') or hasRole('PATIENT')")
     public ResponseEntity<?> viewDoctorDetails(@RequestParam("doctorId") Long doctorId) {
-        return new ResponseEntity<>(doctorService.viewDoctorDetails(doctorId), HttpStatus.OK);
+        return doctorService.viewDoctorDetails(doctorId);
     }
 
     @PostMapping("/add")
     @PreAuthorize("hasRole('DOCTOR')")
     public ResponseEntity<?> registerDoctor(@RequestBody DoctorDTO.AddDoctor doctor,
                                             @RequestParam("userId") Long userId) {
-        return new ResponseEntity<>(doctorService.addNewDoctor(doctor, userId), HttpStatus.OK);
+        return doctorService.addNewDoctor(doctor, userId);
     }
 
     @PutMapping("/edit")
     @PreAuthorize("hasRole('DOCTOR')")
     public ResponseEntity<?> editDoctor(@RequestBody DoctorDTO.EditDoctor doctor,
                                         @RequestParam("doctorId") long doctorId) {
-        return new ResponseEntity<>(doctorService.editDoctor(doctor, doctorId), HttpStatus.OK);
+        return doctorService.editDoctor(doctor, doctorId);
     }
 }

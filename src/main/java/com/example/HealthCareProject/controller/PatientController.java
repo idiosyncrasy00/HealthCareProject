@@ -22,13 +22,13 @@ public class PatientController {
     @PostMapping("/add")
     @PreAuthorize("hasRole('PATIENT')")
     public ResponseEntity<?> registerPatient(@RequestBody PatientDTO.AddPatient patient, @RequestParam("userId") Long userId) {
-        return new ResponseEntity<>(patientService.addNewPatient(patient, userId), HttpStatus.OK);
+        return patientService.addNewPatient(patient, userId);
     }
 
     @PutMapping("/edit")
     @PreAuthorize("hasRole('PATIENT')")
     public ResponseEntity<?> editDoctor(@RequestBody PatientDTO.EditPatient patient, @RequestParam("patientId") long patientId) {
-        return new ResponseEntity<>(patientService.editPatient(patient, patientId), HttpStatus.OK);
+        return patientService.editPatient(patient, patientId);
     }
 
 }

@@ -1,15 +1,18 @@
 package com.example.HealthCareProject.service;
 
 import com.example.HealthCareProject.config.ConvertToDTOUtils;
-import com.example.HealthCareProject.dto.DoctorDTO;
+import com.example.HealthCareProject.consts.StatusCode;
+import com.example.HealthCareProject.dto.CommonMessageDTO;
 import com.example.HealthCareProject.dto.PatientDTO;
-import com.example.HealthCareProject.entity.Doctor;
 import com.example.HealthCareProject.entity.Patient;
 import com.example.HealthCareProject.entity.UserData;
 import com.example.HealthCareProject.repository.PatientRepository;
 import com.example.HealthCareProject.repository.UserDataRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -22,19 +25,21 @@ public class PatientService {
         this.userDataRepository = userDataRepository;
     }
 
-    public PatientDTO.AddPatientResponse addNewPatient(PatientDTO.AddPatient addedPatient, long userId) {
+    public ResponseEntity<?> addNewPatient(PatientDTO.AddPatient addedPatient, long userId) {
         //find user
         //find user id?
-        UserData userData = userDataRepository.findById(userId)
-                .orElseThrow(() -> new IllegalStateException("user with id " + userId + " does not exist!"));;
+        Optional<UserData> userData = userDataRepository.findById(userId);
+        if (!userData.isPresent()) {
+            return ResponseEntity.status(StatusCode.NotFoundCode).body(new CommonMessageDTO<>(StatusCode.NotFoundCode,
+            "User with id " + userId + " not found."));
+        }
         //build doctor
         Patient patient = Patient.builder()
                 .firstName(addedPatient.getFirstName())
                 .lastName(addedPatient.getLastName())
                 .address(addedPatient.getAddress())
-                //.phoneNumber(addedDoctor.getPhoneNumber())
                 .gender(addedPatient.getGender())
-                .userData(userData).dob(addedPatient.getDob()).build(); //adding userid
+                .userData(userData.get()).dob(addedPatient.getDob()).build(); //adding userid
         patientRepository.save(patient);
 
         PatientDTO.AddPatientResponse response = PatientDTO.AddPatientResponse.builder()
@@ -45,27 +50,33 @@ public class PatientService {
                 .userDataDTO(ConvertToDTOUtils.convertToUserDataDTO(patient.getUserData()))
                 .dob(patient.getDob())
                 .build();
-        return response;
+        return ResponseEntity.status(StatusCode.SuccessCode).body(new CommonMessageDTO<>(StatusCode.SuccessCode,
+                "Patient from user id " + userId + " added.", response));
     }
 
     @Transactional
-    public PatientDTO.EditPatientResponse editPatient(PatientDTO.EditPatient patient, long patientId) {
+    public ResponseEntity<?> editPatient(PatientDTO.EditPatient patient, long patientId) {
         //find user id?
-        Patient currentPatient = patientRepository.findById(patientId)
-                .orElseThrow(() -> new IllegalStateException("patient with id " + patientId + " does not exist!"));
-        currentPatient.setFirstName(patient.getFirstName());
-        currentPatient.setLastName(patient.getLastName());
-        currentPatient.setAddress(patient.getAddress());
-        currentPatient.setDob(patient.getDob());
-        currentPatient.setGender(patient.getGender());
+        Optional<Patient> currentPatient = patientRepository.findById(patientId);
+
+        if (!currentPatient.isPresent()) {
+            return ResponseEntity.status(StatusCode.NotFoundCode).body(new CommonMessageDTO<>(StatusCode.NotFoundCode,
+                    "Patient with id " + patientId + " not found."));
+        }
+        currentPatient.get().setFirstName(patient.getFirstName());
+        currentPatient.get().setLastName(patient.getLastName());
+        currentPatient.get().setAddress(patient.getAddress());
+        currentPatient.get().setDob(patient.getDob());
+        currentPatient.get().setGender(patient.getGender());
 
         PatientDTO.EditPatientResponse response = PatientDTO.EditPatientResponse.builder()
-                .firstName(currentPatient.getFirstName())
-                .lastName(currentPatient.getLastName())
-                .address(currentPatient.getAddress())
-                .gender(currentPatient.getGender())
-                .dob(currentPatient.getDob())
+                .firstName(currentPatient.get().getFirstName())
+                .lastName(currentPatient.get().getLastName())
+                .address(currentPatient.get().getAddress())
+                .gender(currentPatient.get().getGender())
+                .dob(currentPatient.get().getDob())
                 .build();
-        return response;
+        return ResponseEntity.status(StatusCode.SuccessCode).body(new CommonMessageDTO<>(StatusCode.SuccessCode,
+                "Patient id " + patientId + "edited.", response));
     }
 }

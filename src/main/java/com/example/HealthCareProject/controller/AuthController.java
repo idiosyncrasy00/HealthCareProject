@@ -1,5 +1,7 @@
 package com.example.HealthCareProject.controller;
 
+import com.example.HealthCareProject.consts.StatusCode;
+import com.example.HealthCareProject.dto.CommonMessageDTO;
 import com.example.HealthCareProject.dto.UserDataDTO;
 import com.example.HealthCareProject.security.JwtUtils;
 import com.example.HealthCareProject.security.UserDetailsImpl;
@@ -21,6 +23,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashSet;
@@ -31,6 +34,7 @@ import java.util.stream.Collectors;
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/auth")
+@Validated
 public class AuthController {
     @Autowired
     AuthenticationManager authenticationManager;
@@ -64,31 +68,35 @@ public class AuthController {
                 .map(item -> item.getAuthority())
                 .collect(Collectors.toList());
         System.out.println("ROles " + roles.toString());
-        return ResponseEntity.ok(new JwtResponse(jwt,
+            return ResponseEntity.ok(new CommonMessageDTO<JwtResponse>(StatusCode.SuccessCode, "Login successfully",
+                    new JwtResponse(jwt,
                 userDetails.getId(),
                 userDetails.getUsername(),
                 userDetails.getEmail(),
-                roles));
+                roles)));
     }
     @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody UserDataDTO.RegisterRequest signUpRequest) {
+    public ResponseEntity<?> registerUser(@RequestBody @Valid UserDataDTO.RegisterRequest signUpRequest) {
         System.out.println("username is " + signUpRequest.getUsername());
         if (userDataRepository.existsByUsername(signUpRequest.getUsername())) {
             return ResponseEntity
                     .badRequest()
-                    .body(new MessageResponse("Error: Username is already taken!"));
+                    .body(new CommonMessageDTO<>(StatusCode.BadRequestCode
+                            , "Error: Username is already taken!"));
         }
 
         if (userDataRepository.existsByEmail(signUpRequest.getEmail())) {
             return ResponseEntity
                     .badRequest()
-                    .body(new MessageResponse("Error: Email is already in use!"));
+                    .body(new CommonMessageDTO<>(StatusCode.BadRequestCode
+                            , "Error: Email is already in use!"));
         }
 
         // Create new user's account
         UserData userData = new UserData(signUpRequest.getUsername(),
+                signUpRequest.getEmail(),
                 encoder.encode(signUpRequest.getPassword()),
-                signUpRequest.getEmail()
+                signUpRequest.getPhoneNumber()
                 );
 
         Set<String> strRoles = signUpRequest.getRole();
@@ -125,7 +133,6 @@ public class AuthController {
         userData.setRoles(roles);
         System.out.println(userData.toString());
         userDataRepository.save(userData);
-        System.out.println("signup requestt");
-        return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+        return ResponseEntity.ok(new CommonMessageDTO(StatusCode.SuccessCode, "User registered successfully!"));
     }
 }

@@ -23,36 +23,33 @@ public class UserDataController {
         this.userDataService = userDataService;
     }
 
-    @GetMapping("/view/all")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<UserData>> getUsersData() {
-        return new ResponseEntity<List<UserData>>(userDataService.getUsersData(), HttpStatus.OK);
+//    @GetMapping("/view/all")
+//    @PreAuthorize("hasRole('ADMIN')")
+//    public ResponseEntity<List<UserData>> getUsersData() {
+//        return new ResponseEntity<List<UserData>>(userDataService.getUsersData(), HttpStatus.OK);
+//    }
+//
+//    @GetMapping("/view/email")
+//    @PreAuthorize("hasRole('PATIENT') or hasRole('DOCTOR') or hasRole('ADMIN')")
+//    public ResponseEntity<Optional<UserData>> getUserDataByEmail(@RequestParam("email") String email) {
+//        return new ResponseEntity<Optional<UserData>>(userDataService.getSingleUserDataByEmail(email), HttpStatus.OK);
+//    }
+
+    @GetMapping("/view/id")
+    @PreAuthorize("hasRole('PATIENT') or hasRole('DOCTOR') or hasRole('ADMIN')")
+    public ResponseEntity<?> getUserDataByUserDataID(@RequestParam("userId") long userId) {
+        return userDataService.getSingleUserDataByUserDataID(userId);
     }
 
-    @GetMapping("/view/email")
-    @PreAuthorize("hasRole('PATIENT') or hasRole('DOCTOR') or hasRole('ADMIN')")
-    public ResponseEntity<Optional<UserData>> getUserDataByEmail(@RequestParam("email") String email) {
-        return new ResponseEntity<Optional<UserData>>(userDataService.getSingleUserDataByEmail(email), HttpStatus.OK);
-    }
-
-    @GetMapping("/view/id/")
-    @PreAuthorize("hasRole('PATIENT') or hasRole('DOCTOR') or hasRole('ADMIN')")
-    public ResponseEntity<Optional<UserData>> getUserDataByUserDataID(@RequestParam("userId") long userId) {
-        return new ResponseEntity<Optional<UserData>>(userDataService.getSingleUserDataByUserDataID(userId), HttpStatus.OK);
-    }
-    @PostMapping
-    public ResponseEntity<String> registerUserData(@RequestBody UserData user) {
-        return new ResponseEntity<>(userDataService.addNewUserData(user), HttpStatus.OK);
-    }
     @DeleteMapping("/delete")
     @PreAuthorize("hasRole('PATIENT') or hasRole('DOCTOR') or hasRole('ADMIN')")
-    public ResponseEntity<String> deleteUserData(@RequestParam("userId") long userId) {
-        return new ResponseEntity<String>(userDataService.deleteUserData(userId), HttpStatus.OK);
+    public ResponseEntity<?> deleteUserData(@RequestParam("userId") long userId) {
+        return userDataService.deleteUserData(userId);
     }
     @PutMapping("/update")
     @PreAuthorize("hasRole('PATIENT') or hasRole('DOCTOR') or hasRole('ADMIN')")
-    public ResponseEntity<UserDataDTO.updateUserData> updateUserData(@RequestBody UserDataDTO.updateUserData user,
-                                                                     @RequestParam("userId") long userId) throws JsonProcessingException {
-        return new ResponseEntity<UserDataDTO.updateUserData>(userDataService.updateUserData(user, userId), HttpStatus.OK);
+    public ResponseEntity<?> updateUserData(@RequestBody UserDataDTO.updateUserData user,
+                                                                     @RequestParam("userId") long userId) {
+        return userDataService.updateUserData(user, userId);
     }
 }

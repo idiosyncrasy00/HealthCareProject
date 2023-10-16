@@ -1,5 +1,6 @@
 package com.example.HealthCareProject.entity;
 
+import com.example.HealthCareProject.entity.common.Common;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
@@ -14,11 +15,7 @@ import org.hibernate.annotations.OnDeleteAction;
 @Entity
 @Table(name = "HealthRecord"
 )
-public class HealthRecord {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
-
+public class HealthRecord extends Common {
     private String bloodType;
     private double height;
     private String heightUnit;
@@ -28,5 +25,5 @@ public class HealthRecord {
     @OneToOne(cascade = CascadeType.MERGE)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "patient_id")
-    private Patient patient_id;
+    private Patient patient;
 }

@@ -1,5 +1,6 @@
 package com.example.HealthCareProject.entity;
 
+import com.example.HealthCareProject.entity.common.Common;
 import jakarta.persistence.*;
 
 import java.util.HashSet;
@@ -22,11 +23,7 @@ import org.hibernate.annotations.OnDeleteAction;
                 @UniqueConstraint(columnNames = "email")
         }
 )
-public class UserData {
-    @Id
-    @Column(name="user_id", updatable=false)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+public class UserData extends Common {
     @Column(name="username", nullable = false)
     private String username;
     @Column(name="password", nullable = false)
@@ -34,7 +31,7 @@ public class UserData {
     @Column(name="email", nullable = false)
     private String email;
     @Column(name="phoneNumber", unique = true)
-    private Long phoneNumber;
+    private String phoneNumber;
     @Column(nullable = false, updatable=false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @ManyToMany(fetch = FetchType.EAGER)
@@ -43,13 +40,14 @@ public class UserData {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
-    public UserData(String username, String password, String email) {
+    public UserData(String username, String email, String password, String phoneNumber) {
         this.username = username;
         this.password = password;
         this.email = email;
+        this.phoneNumber = phoneNumber;
     }
 
-    public UserData(long id, String username, String email, long phoneNumber, Set<Role> roles) {
+    public UserData(long id, String username, String email, String phoneNumber, Set<Role> roles) {
         this.id = id;
         this.username = username;
         this.email = email;

@@ -1,6 +1,7 @@
 package com.example.HealthCareProject.entity;
 
 import com.example.HealthCareProject.dto.UserDataDTO;
+import com.example.HealthCareProject.entity.common.Common;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
@@ -15,11 +16,7 @@ import org.hibernate.annotations.OnDeleteAction;
 @Entity
 @Table(name = "Doctor"
 )
-public class Doctor {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
-
+public class Doctor extends Common {
     @Column(name="firstName")
     private String firstName;
     @Column(name="lastName")

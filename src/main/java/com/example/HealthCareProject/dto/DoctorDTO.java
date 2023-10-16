@@ -2,13 +2,14 @@ package com.example.HealthCareProject.dto;
 
 import com.example.HealthCareProject.entity.Doctor;
 import com.example.HealthCareProject.entity.UserData;
+import com.example.HealthCareProject.entity.common.Common;
 import jakarta.persistence.Column;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.*;
 
-public class DoctorDTO extends Doctor {
+public class DoctorDTO {
 
     @Builder
     @Getter
@@ -23,7 +24,7 @@ public class DoctorDTO extends Doctor {
         private String gender;
         private String description;
         private String email;
-        private Long phoneNumber;
+        private String phoneNumber;
     }
 
     @Builder
@@ -70,6 +71,7 @@ public class DoctorDTO extends Doctor {
         private String doctorType;
         private String gender;
         private String description;
+        private UserDataDTO userDataDTO;
     }
 
     @Builder
@@ -85,5 +87,6 @@ public class DoctorDTO extends Doctor {
         private String doctorType;
         private String gender;
         private String description;
+        private UserDataDTO userDataDTO;
     }
 }

@@ -3,8 +3,10 @@ import com.example.HealthCareProject.entity.Role;
 import jakarta.persistence.Column;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import org.hibernate.validator.constraints.Range;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -18,7 +20,7 @@ public class UserDataDTO {
     private long id;
     private String username;
     private String email;
-    private Long phoneNumber;
+    private String phoneNumber;
     private Set<Role> roles = new HashSet<>();
 
     @Builder
@@ -27,19 +29,18 @@ public class UserDataDTO {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class RegisterRequest {
-        @NotBlank
-        @Size(min = 3, max = 20)
+        @NotBlank(message = "Username is not allowed to be empty!")
+        @Size(min = 5, max = 32, message = "Username between 5-32 characters long")
         private String username;
-        @NotBlank
-        @Size(min = 6, max = 40)
+        @NotBlank(message = "Password is not allowed to be empty!")
+        @Size(min = 8, max = 32, message = "Password between 8-32 characters long")
         private String password;
-        @NotBlank
-        @Size(max = 50)
-        @Email
+        @NotBlank(message = "Email is not allowed to be empty!")
+        @Email(message = "Invalid email format!")
         private String email;
-        @Size(max = 12)
-        @Email
-        private Long phoneNumber;
+        @NotBlank(message = "Phone number is not allowed to be empty!")
+        @Size(min = 10, max = 12, message = "Phone number between 10-12 digits long")
+        private String phoneNumber;
         @Column(nullable = false)
         private Set<String> role;
     }
@@ -50,9 +51,10 @@ public class UserDataDTO {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class LoginRequest {
-        @NotBlank
+        @NotBlank(message = "Username is not allowed to be empty!")
         private String username;
-        @NotBlank
+        @NotBlank(message = "Password is not allowed to be empty!")
+        @Size(min = 8, max = 32, message = "Password between 8-32 characters long")
         private String password;
     }
 
@@ -62,8 +64,13 @@ public class UserDataDTO {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class updateUserData {
+        @NotBlank(message = "Username is not allowed to be empty!")
         private String username;
+        @NotBlank(message = "Email is not allowed to be empty!")
+        @Email(message = "Invalid email format!")
         private String email;
+        @NotBlank(message = "Password is not allowed to be empty!")
+        @Size(min = 8, max = 32, message = "Password between 8-32 characters long")
         private String password;
     }
 }

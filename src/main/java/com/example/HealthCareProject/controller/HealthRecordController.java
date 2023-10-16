@@ -24,27 +24,27 @@ public class HealthRecordController {
     @PreAuthorize("hasRole('PATIENT')")
     public ResponseEntity<?> viewHealthRecordByPatient(@RequestParam("patientId") Long patientId,
                                                        @RequestParam("healthRecordId") Long healthRecordId) {
-        return new ResponseEntity<>(healthRecordService.viewHealthRecordByPatient(healthRecordId, patientId), HttpStatus.OK);
+        return healthRecordService.viewHealthRecordByPatient(healthRecordId, patientId);
     }
 
     @GetMapping("/view/doctor")
     @PreAuthorize("hasRole('DOCTOR')")
     public ResponseEntity<?> viewHealthRecordByDoctor(@RequestParam("doctorId") Long doctorId,
                                                       @RequestParam("healthRecordId") Long healthRecordId) {
-        return new ResponseEntity<>(healthRecordService.viewHealthRecordByDoctor(doctorId,healthRecordId), HttpStatus.OK);
+        return healthRecordService.viewHealthRecordByDoctor(doctorId,healthRecordId);
     }
 
     @PostMapping("/add")
     @PreAuthorize("hasRole('PATIENT')")
     public ResponseEntity<?> addHealthRecord(@RequestBody HealthRecord healthRecord) {
-        return new ResponseEntity<>(healthRecordService.addHealthRecord(healthRecord), HttpStatus.OK);
+        return healthRecordService.addHealthRecord(healthRecord);
     }
 
     @PutMapping("/edit")
     @PreAuthorize("hasRole('PATIENT')")
-    public ResponseEntity<?> editHealthRecord(@RequestBody HealthRecordDTO.EditHealthRecordDTO editHealthRecordDTO,
+    public ResponseEntity<?> editHealthRecord(@RequestBody HealthRecordDTO editHealthRecordDTO,
                                               @RequestParam("healthRecordID") Long healthRecordID,
                                               @RequestParam("patientID") Long patientID) {
-        return new ResponseEntity<>(healthRecordService.editHealthRecord(editHealthRecordDTO, healthRecordID, patientID), HttpStatus.OK);
+        return healthRecordService.editHealthRecord(editHealthRecordDTO, healthRecordID, patientID);
     }
 }

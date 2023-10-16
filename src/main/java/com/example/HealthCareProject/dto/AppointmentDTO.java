@@ -12,10 +12,10 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AppointmentDTO {
-    Patient patient_id;
-    Doctor doctor_id;
-    Date appointmentTime;
-    String message;
+    private Patient patient;
+    private Doctor doctor;
+    private Date appointmentTime;
+    private String message;
 
     @Builder
     @Getter

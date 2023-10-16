@@ -1,5 +1,6 @@
 package com.example.HealthCareProject.entity;
 
+import com.example.HealthCareProject.entity.common.Common;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import jakarta.persistence.*;
 import lombok.*;
@@ -20,29 +21,25 @@ import java.util.Date;
 @Entity
 @Table(name = "Appointment"
 )
-public class Appointment implements Serializable {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
-
+public class Appointment extends Common {
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "doctor_id")
-    private Doctor doctor_id;
+    private Doctor doctor;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "patient_id")
-    private Patient patient_id;
+    private Patient patient;
 
     @JoinColumn(name = "appointmentTime")
-    @DateTimeFormat(pattern = "dd/MM/yyyy hh:mm")
+    @DateTimeFormat(pattern = "dd/MM/yyyy hh:mm:ss")
     private Date appointmentTime;
 
-    @CreationTimestamp
-    @Temporal(TemporalType.TIMESTAMP)
-    @DateTimeFormat(pattern = "dd/MM/yyyy")
-    private Date timeCreated;
+//    @CreationTimestamp
+//    @Temporal(TemporalType.TIMESTAMP)
+//    @DateTimeFormat(pattern = "dd/MM/yyyy")
+//    private Date timeCreated;
 
     @Column(name="status")
     /**

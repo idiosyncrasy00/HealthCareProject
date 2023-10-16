@@ -1,5 +1,6 @@
 package com.example.HealthCareProject.entity;
 
+import com.example.HealthCareProject.entity.common.Common;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
@@ -16,10 +17,7 @@ import java.util.Date;
 @Entity
 @Table(name = "Patient"
 )
-public class Patient {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+public class Patient extends Common {
 
     @Column(name="firstName")
     private String firstName;
