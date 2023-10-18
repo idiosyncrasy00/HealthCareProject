@@ -37,7 +37,7 @@ public class HealthRecordService {
     }
 
     public ResponseEntity<?> viewHealthRecordByDoctor(Long doctorId, Long patientId) {
-        int checkAcceptedAppointment = appointmentRepository.getAcceptedAppointment(doctorId, patientId);
+        int checkAcceptedAppointment = appointmentRepository.countByStatusEqualsAndDoctorIdAndPatientId(1,doctorId, patientId);
         if (checkAcceptedAppointment <= 0) {
             //throw new IllegalStateException("Doctor cannot view this patient's health record!");
             return ResponseEntity.status(StatusCode.BadRequestCode).body(new CommonMessageDTO<>(StatusCode.BadRequestCode,

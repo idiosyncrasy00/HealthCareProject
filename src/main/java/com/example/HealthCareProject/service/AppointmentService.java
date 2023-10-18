@@ -1,8 +1,11 @@
 package com.example.HealthCareProject.service;
 
 import com.example.HealthCareProject.config.DateTimeConfig;
+import com.example.HealthCareProject.consts.StatusCode;
 import com.example.HealthCareProject.dto.AppointmentDTO;
+import com.example.HealthCareProject.dto.CommonMessageDTO;
 import com.example.HealthCareProject.entity.Appointment;
+import com.example.HealthCareProject.entity.Doctor;
 import com.example.HealthCareProject.entity.Patient;
 import com.example.HealthCareProject.entity.UserData;
 import com.example.HealthCareProject.repository.AppointmentRepository;
@@ -10,6 +13,7 @@ import com.example.HealthCareProject.repository.DoctorRepository;
 import com.example.HealthCareProject.repository.PatientRepository;
 import com.example.HealthCareProject.repository.UserDataRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -28,15 +32,26 @@ public class AppointmentService {
         this.appointmentRepository = appointmentRepository;
     }
 
-    public Appointment makeAppointment(Appointment appointmentBody) {
+    public ResponseEntity<?> makeAppointment(Appointment appointmentBody) {
         long patientId = appointmentBody.getPatient().getId();
         long doctorId = appointmentBody.getDoctor().getId();
-        patientRepository.findById(patientId).orElseThrow(() -> new IllegalStateException("patient with id " + patientId + " does not exist!"));
-        doctorRepository.findById(doctorId).orElseThrow(
-                () -> new IllegalStateException("doctor with id " + doctorId + " does not exist!")
-        );
+        Optional<Patient> patient = patientRepository.findById(patientId);
+        if (!patient.isPresent()) {
+            return ResponseEntity.status(StatusCode.NotFoundCode)
+                    .body(new CommonMessageDTO<>(StatusCode.NotFoundCode,
+                            "patient with id " + patientId + " does not exist!"));
+        }
+        Optional<Doctor> doctor = doctorRepository.findById(doctorId);
+        if (!doctor.isPresent()) {
+            return ResponseEntity.status(StatusCode.NotFoundCode)
+                    .body(new CommonMessageDTO<>(StatusCode.NotFoundCode,
+                            "doctor with id " + doctorId + " does not exist!"));
+        }
+        //() -> new IllegalStateException("doctor with id " + doctorId + " does not exist!")
         appointmentRepository.save(appointmentBody);
-        return appointmentBody;
+
+        return ResponseEntity.status(StatusCode.SuccessCode).body(new CommonMessageDTO<>(StatusCode.SuccessCode, "success",
+                appointmentBody));
     }
 
     @Transactional

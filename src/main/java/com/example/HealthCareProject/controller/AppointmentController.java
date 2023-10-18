@@ -29,7 +29,8 @@ public class AppointmentController {
     @PostMapping("/make")
     @PreAuthorize("hasRole('PATIENT')")
     public ResponseEntity<?> makeAppointment(@RequestBody Appointment appointment) {
-        return new ResponseEntity<>(appointmentService.makeAppointment(appointment), HttpStatus.OK);
+//        return new ResponseEntity<>(appointmentService.makeAppointment(appointment), HttpStatus.OK);
+        return appointmentService.makeAppointment(appointment);
     }
 
     @PostMapping("/accept/:appointmentID")
