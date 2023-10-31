@@ -25,4 +25,7 @@ public interface DoctorRepository extends JpaRepository<Doctor, Long>, JpaSpecif
     nativeQuery = true)
     Object getDoctorInformation(long doctorId);
 
+    @Query("select count(*) from Doctor d where d.id = ?1 and d.userData.id = ?2")
+    int checkUserIdIsDoctorId(long doctorId, long userId);
+
 }

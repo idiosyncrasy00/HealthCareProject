@@ -23,33 +23,21 @@ public class UserDataController {
         this.userDataService = userDataService;
     }
 
-//    @GetMapping("/view/all")
-//    @PreAuthorize("hasRole('ADMIN')")
-//    public ResponseEntity<List<UserData>> getUsersData() {
-//        return new ResponseEntity<List<UserData>>(userDataService.getUsersData(), HttpStatus.OK);
-//    }
-//
-//    @GetMapping("/view/email")
-//    @PreAuthorize("hasRole('PATIENT') or hasRole('DOCTOR') or hasRole('ADMIN')")
-//    public ResponseEntity<Optional<UserData>> getUserDataByEmail(@RequestParam("email") String email) {
-//        return new ResponseEntity<Optional<UserData>>(userDataService.getSingleUserDataByEmail(email), HttpStatus.OK);
-//    }
-
-    @GetMapping("/view/id")
-    @PreAuthorize("hasRole('PATIENT') or hasRole('DOCTOR') or hasRole('ADMIN')")
-    public ResponseEntity<?> getUserDataByUserDataID(@RequestParam("userId") long userId) {
-        return userDataService.getSingleUserDataByUserDataID(userId);
+    @GetMapping("/view")
+    @PreAuthorize("(hasRole('PATIENT') or hasRole('DOCTOR')) and #id == authentication.principal.id")
+    public ResponseEntity<?> getUserDataByUserDataID(@RequestParam("id") long id) {
+        return userDataService.getSingleUserDataByUserDataID(id);
     }
 
     @DeleteMapping("/delete")
-    @PreAuthorize("hasRole('PATIENT') or hasRole('DOCTOR') or hasRole('ADMIN')")
-    public ResponseEntity<?> deleteUserData(@RequestParam("userId") long userId) {
-        return userDataService.deleteUserData(userId);
+    @PreAuthorize("(hasRole('PATIENT') or hasRole('DOCTOR')) and #id == authentication.principal.id")
+    public ResponseEntity<?> deleteUserData(@RequestParam("id") long id) {
+        return userDataService.deleteUserData(id);
     }
     @PutMapping("/update")
-    @PreAuthorize("hasRole('PATIENT') or hasRole('DOCTOR') or hasRole('ADMIN')")
+    @PreAuthorize("(hasRole('PATIENT') or hasRole('DOCTOR')) and #id == authentication.principal.id")
     public ResponseEntity<?> updateUserData(@RequestBody UserDataDTO.updateUserData user,
-                                                                     @RequestParam("userId") long userId) {
-        return userDataService.updateUserData(user, userId);
+                                                                     @RequestParam("id") long id) {
+        return userDataService.updateUserData(user, id);
     }
 }

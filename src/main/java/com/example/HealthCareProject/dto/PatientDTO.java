@@ -7,18 +7,18 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
+import java.io.Serializable;
+
 @Builder
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class PatientDTO {
+public class PatientDTO implements Serializable {
     private long patient_id;
-    private String firstName;
-    private String lastName;
+    private String fullName;
     private String address;
     private String gender;
-    private UserDataDTO userDataDTO;
     private String dob;
 
     @Builder
@@ -26,9 +26,8 @@ public class PatientDTO {
     @Setter
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class AddPatient {
-        private String firstName;
-        private String lastName;
+    public static class AddPatient implements Serializable {
+        private String fullName;
         private String address;
         private String gender;
         private UserData userData;
@@ -40,9 +39,8 @@ public class PatientDTO {
     @Setter
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class AddPatientResponse {
-        private String firstName;
-        private String lastName;
+    public static class AddPatientResponse implements Serializable {
+        private String fullName;
         private String address;
         private String gender;
         private UserDataDTO userDataDTO;
@@ -54,9 +52,8 @@ public class PatientDTO {
     @Setter
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class EditPatient {
-        private String firstName;
-        private String lastName;
+    public static class EditPatient implements Serializable {
+        private String fullName;
         private String address;
         private String gender;
         private String dob;
@@ -67,9 +64,8 @@ public class PatientDTO {
     @Setter
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class EditPatientResponse {
-        private String firstName;
-        private String lastName;
+    public static class EditPatientResponse implements Serializable {
+        private String fullName;
         private String address;
         private String gender;
         private String dob;

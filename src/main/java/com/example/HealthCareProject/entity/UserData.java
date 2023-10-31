@@ -1,6 +1,7 @@
 package com.example.HealthCareProject.entity;
 
 import com.example.HealthCareProject.entity.common.Common;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.HashSet;
@@ -26,6 +27,7 @@ import org.hibernate.annotations.OnDeleteAction;
 public class UserData extends Common {
     @Column(name="username", nullable = false)
     private String username;
+    @JsonIgnore
     @Column(name="password", nullable = false)
     private String password;
     @Column(name="email", nullable = false)

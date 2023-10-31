@@ -7,6 +7,8 @@ import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import java.io.Serializable;
+
 @Builder
 @Getter
 @Setter
@@ -16,11 +18,9 @@ import org.hibernate.annotations.OnDeleteAction;
 @Entity
 @Table(name = "Doctor"
 )
-public class Doctor extends Common {
-    @Column(name="firstName")
-    private String firstName;
-    @Column(name="lastName")
-    private String lastName;
+public class Doctor extends Common implements Serializable {
+    @Column(name="fullName")
+    private String fullName;
     @Column(name="address")
     private String address;
     @Column(name="doctorType")

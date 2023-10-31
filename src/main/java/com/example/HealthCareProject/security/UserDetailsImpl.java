@@ -1,5 +1,7 @@
 package com.example.HealthCareProject.security;
 
+import com.example.HealthCareProject.entity.Doctor;
+import com.example.HealthCareProject.entity.Patient;
 import com.example.HealthCareProject.entity.UserData;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
@@ -33,18 +35,47 @@ public class UserDetailsImpl implements UserDetails {
         this.id = id;
         this.username = username;
         this.password = password;
-//        this.first_name = first_name;
-//        this.last_name = last_name;
-//        this.address = address;
         this.email = email;
         this.authorities = authorities;
     }
+
+//    public UserDetailsImpl(Long id, String username, String password, String email, Patient patient,
+//                           Collection<? extends GrantedAuthority> authorities) {
+//        this.id = id;
+//        this.username = username;
+//        this.password = password;
+//        this.email = email;
+//        this.patient = patient;
+//        this.authorities = authorities;
+//    }
+//
+//    public UserDetailsImpl(Long id, String username, String password, String email, Doctor doctor,
+//                           Collection<? extends GrantedAuthority> authorities) {
+//        this.id = id;
+//        this.username = username;
+//        this.password = password;
+//        this.email = email;
+//        this.doctor = doctor;
+//        this.authorities = authorities;
+//    }
 
     public static UserDetailsImpl build(UserData userData) {
         List<GrantedAuthority> authorities = userData.getRoles().stream()
                 .map(role -> new SimpleGrantedAuthority(role.getName().name()))
                 .collect(Collectors.toList());
         System.out.println("Authorities " + authorities.toString());
+        if (authorities.toString().contains("DOCTOR")) {
+            return new UserDetailsImpl(
+                    userData.getId(),
+                    userData.getUsername(),
+                    userData.getPassword(),
+//                userData.getFirst_name(),
+//                userData.getLast_name(),
+//                userData.getAddress(),
+                    userData.getEmail(),
+                    authorities
+            );
+        }
         return new UserDetailsImpl(
                 userData.getId(),
                 userData.getUsername(),

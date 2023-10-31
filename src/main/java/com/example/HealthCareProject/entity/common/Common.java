@@ -1,6 +1,7 @@
 package com.example.HealthCareProject.entity.common;
 
 import com.example.HealthCareProject.config.DateTimeConfig;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,18 +23,19 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Setter
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-public class Common {
+public class Common implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected Long id;
 
-
+    @JsonIgnore
     @CreatedDate
     //@Column(name = "created_at", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP", nullable = false, updatable = false)
     @Column(name = "created_at", updatable = false)
 //    @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     protected String createdAt = DateTimeConfig.getCurrentDateTime("dd/MM/yyyy - HH:mm:ss");
 
+    @JsonIgnore
     @LastModifiedDate
     @Column(name = "updated_at")
 //    @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm:ss")

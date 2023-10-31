@@ -13,4 +13,7 @@ import java.util.List;
 public interface HealthRecordRepository extends JpaRepository<HealthRecord, Long> {
     @Query(value = "SELECT * FROM health_record h where h.patient_id=?1", nativeQuery = true)
     HealthRecord findByPatientID(Long patientID);
+
+    @Query(value ="select count(*) from HealthRecord h where h.id = ?1 and h.patient.id = ?2")
+    int checkHealthRecordIdIsPatientId(long healthRecordId, long patientId);
 }

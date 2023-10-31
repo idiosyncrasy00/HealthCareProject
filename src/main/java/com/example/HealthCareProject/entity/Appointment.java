@@ -1,6 +1,7 @@
 package com.example.HealthCareProject.entity;
 
 import com.example.HealthCareProject.entity.common.Common;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import jakarta.persistence.*;
 import lombok.*;
@@ -21,7 +22,8 @@ import java.util.Date;
 @Entity
 @Table(name = "Appointment"
 )
-public class Appointment extends Common {
+public class Appointment extends Common implements Serializable {
+//    @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "doctor_id")
@@ -50,4 +52,10 @@ public class Appointment extends Common {
     private int status = 0;
     @Column(name="message")
     private String message;
+
+    public Appointment(Patient patient, Doctor doctor, int status) {
+        this.patient = patient;
+        this.doctor = doctor;
+        this.status = status;
+    }
 }

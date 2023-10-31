@@ -5,6 +5,7 @@ import com.example.HealthCareProject.consts.StatusCode;
 import com.example.HealthCareProject.dto.CommonMessageDTO;
 import com.example.HealthCareProject.dto.HealthRecordDTO;
 import com.example.HealthCareProject.entity.HealthRecord;
+import com.example.HealthCareProject.entity.Patient;
 import com.example.HealthCareProject.repository.*;
 import jakarta.transaction.Transactional;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +26,10 @@ public class HealthRecordService {
         this.appointmentRepository = appointmentRepository;
     }
 
+    public int checkHealthRecordIdIsPatientId(long healthRecordId, long patientId) {
+        return healthRecordRepository.checkHealthRecordIdIsPatientId(healthRecordId, patientId);
+    }
+
     public ResponseEntity<?> viewHealthRecordByPatient(Long healthRecordId, Long patientId) {
         boolean isPatientExists = patientRepository.findById(patientId).isPresent();
         if (!isPatientExists) {
@@ -33,7 +38,9 @@ public class HealthRecordService {
         }
         HealthRecord healthRecord = healthRecordRepository.findById(healthRecordId).
                 orElseThrow(() -> new IllegalStateException("health record with id " + healthRecordId + " does not exist!"));
-        return ResponseEntity.status(StatusCode.SuccessCode).body(new CommonMessageDTO(StatusCode.SuccessCode, "Success", healthRecord));
+        //return ResponseEntity.status(StatusCode.SuccessCode).body(new CommonMessageDTO(StatusCode.SuccessCode, "Success", healthRecord));
+        return ResponseEntity.status(StatusCode.SuccessCode).body(new CommonMessageDTO(StatusCode.SuccessCode, "Success"));
+
     }
 
     public ResponseEntity<?> viewHealthRecordByDoctor(Long doctorId, Long patientId) {
@@ -59,17 +66,27 @@ public class HealthRecordService {
                 viewHealthRecordDTO));
     }
 
-    public ResponseEntity<?> addHealthRecord(HealthRecord healthRecord) {
-        long patientID = healthRecord.getPatient().getId();
-        boolean isPatient = patientRepository.findById(patientID).isPresent();
+    public ResponseEntity<?> addHealthRecord(HealthRecordDTO healthRecordDTO, long id, long patientId) {
+//        long patientID = healthRecord.getPatient().getId();
+        boolean isPatient = patientRepository.findById(patientId).isPresent();
 
         if (!isPatient) {
             return ResponseEntity.status(StatusCode.NotFoundCode).body(new CommonMessageDTO<>(StatusCode.NotFoundCode,
-                    "Patient with " + patientID + " does not exist!"));
+                    "Patient with " + patientId + " does not exist!"));
 //            throw new IllegalStateException("Patient with " + patientID + " does not exist!");
         }
+        Patient patient = new Patient();
+        patient.setId(patientId);
+        HealthRecord healthRecord = HealthRecord.builder()
+                .height(healthRecordDTO.getHeight())
+                .heightUnit(healthRecordDTO.getHeightUnit())
+                .weight(healthRecordDTO.getWeight())
+                .weightUnit(healthRecordDTO.getWeightUnit())
+                .bloodType(healthRecordDTO.getBloodType())
+                .patient(patient)
+                .build();
         healthRecordRepository.save(healthRecord);
-        HealthRecordDTO healthRecordDTO = HealthRecordDTO.builder()
+        HealthRecordDTO response = HealthRecordDTO.builder()
                 .id(healthRecord.getId())
                 .bloodType(healthRecord.getBloodType())
                 .height(healthRecord.getHeight())
@@ -79,7 +96,7 @@ public class HealthRecordService {
                 .patient(healthRecord.getPatient().getId())
                 .build();
         return ResponseEntity.status(StatusCode.SuccessCode).body(new CommonMessageDTO<>(StatusCode.SuccessCode,
-                healthRecordDTO));
+                response));
     }
 
     @Transactional

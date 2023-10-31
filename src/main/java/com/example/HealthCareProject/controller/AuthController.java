@@ -14,7 +14,9 @@ import com.example.HealthCareProject.consts.ERole;
 
 import com.example.HealthCareProject.entity.UserData;
 import com.example.HealthCareProject.repository.UserDataRepository;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
@@ -51,6 +53,8 @@ public class AuthController {
 
     @Autowired
     JwtUtils jwtUtils;
+    private HttpServletResponse res = new Response();
+
 
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody UserDataDTO.LoginRequest loginRequest) {
@@ -68,12 +72,13 @@ public class AuthController {
                 .map(item -> item.getAuthority())
                 .collect(Collectors.toList());
         System.out.println("ROles " + roles.toString());
-            return ResponseEntity.ok(new CommonMessageDTO<JwtResponse>(StatusCode.SuccessCode, "Login successfully",
+        res.setStatus(StatusCode.SuccessCode);
+        return ResponseEntity.ok(new CommonMessageDTO<JwtResponse>(StatusCode.SuccessCode, "Login successfully",
                     new JwtResponse(jwt,
                 userDetails.getId(),
                 userDetails.getUsername(),
                 userDetails.getEmail(),
-                roles)));
+                roles), res));
     }
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@RequestBody @Valid UserDataDTO.RegisterRequest signUpRequest) {

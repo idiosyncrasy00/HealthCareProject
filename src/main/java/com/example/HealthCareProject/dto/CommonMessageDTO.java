@@ -1,22 +1,25 @@
 package com.example.HealthCareProject.dto;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.*;
 
+import java.io.Serializable;
+
 @Builder
-@Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CommonMessageDTO<T> {
-    private int statusCode;
-    private String messageDetails = "success";
-    private T result;
+@Getter
+public class CommonMessageDTO<T> implements Serializable {
+    protected int statusCode;
+    protected String messageDetails = "success";
+    protected T result;
+    protected HttpServletResponse httpResponse;
 
     public CommonMessageDTO(int statusCode, String messageDetails) {
         this.statusCode = statusCode;
         this.messageDetails = messageDetails;
     }
-
     public CommonMessageDTO(int statusCode, T result) {
         this.statusCode = statusCode;
         this.result = result;

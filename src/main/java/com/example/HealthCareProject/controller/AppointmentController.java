@@ -1,20 +1,29 @@
 package com.example.HealthCareProject.controller;
 
+import com.example.HealthCareProject.consts.StatusCode;
+import com.example.HealthCareProject.dto.CommonMessageDTO;
 import com.example.HealthCareProject.dto.PatientDTO;
 import com.example.HealthCareProject.entity.Appointment;
 import com.example.HealthCareProject.service.AppointmentService;
+import com.example.HealthCareProject.service.DoctorService;
 import com.example.HealthCareProject.service.PatientService;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping(path = "api/appointment")
 public class AppointmentController {
     private AppointmentService appointmentService;
+    private DoctorService doctorService;
+    private PatientService patientService;
 
 //    @Autowired
 //    public AppointmentController(AppointmentService appointmentService) {
@@ -27,28 +36,49 @@ public class AppointmentController {
     }
 
     @PostMapping("/make")
-    @PreAuthorize("hasRole('PATIENT')")
-    public ResponseEntity<?> makeAppointment(@RequestBody Appointment appointment) {
-//        return new ResponseEntity<>(appointmentService.makeAppointment(appointment), HttpStatus.OK);
-        return appointmentService.makeAppointment(appointment);
+    @PreAuthorize("hasRole('PATIENT') and #id == authentication.principal.id")
+    public CommonMessageDTO makeAppointment(@RequestBody Appointment appointment,
+                                             @RequestParam long id, HttpServletResponse res
+    ) throws ServletException, IOException {
+        return appointmentService.makeAppointment(appointment, id, res);
     }
 
-    @PostMapping("/accept/:appointmentID")
-    @PreAuthorize("hasRole('PATIENT')")
-    public ResponseEntity<?> acceptAppointment(@RequestParam long appointmentID) {
-        return new ResponseEntity<>(appointmentService.acceptAppointment(appointmentID), HttpStatus.OK);
+    @PostMapping("/accept")
+    @PreAuthorize("hasRole('DOCTOR') and #id == authentication.principal.id")
+    public ResponseEntity<?> acceptAppointment(@RequestParam long appointmentId,
+                                               @RequestParam long doctorId,
+                                               @RequestParam long id
+    ) {
+        if (doctorService.checkUserIdIsDoctorId(doctorId, id) <= 0) {
+            return ResponseEntity.status(StatusCode.BadRequestCode)
+                    .body(new CommonMessageDTO<>(StatusCode.BadRequestCode,
+                            "You cannot do this operation!"));
+        }
+        return new ResponseEntity<>(appointmentService.acceptAppointment(appointmentId, doctorId), HttpStatus.OK);
     }
 
-    @PostMapping("/reject/:appointmentID")
-    @PreAuthorize("hasRole('PATIENT')")
-    public ResponseEntity<?> rejectAppointment(@RequestParam long appointmentID) {
-        return new ResponseEntity<>(appointmentService.rejectAppointment(appointmentID), HttpStatus.OK);
+    @PostMapping("/reject")
+    @PreAuthorize("hasRole('DOCTOR') and #id == authentication.principal.id")
+    public ResponseEntity<?> rejectAppointment(@RequestParam long appointmentId, @RequestParam long doctorId,
+                                               @RequestParam long id) {
+        if (doctorService.checkUserIdIsDoctorId(doctorId, id) <= 0) {
+            return ResponseEntity.status(StatusCode.BadRequestCode)
+                    .body(new CommonMessageDTO<>(StatusCode.BadRequestCode,
+                            "You cannot do this operation!"));
+        }
+        return new ResponseEntity<>(appointmentService.rejectAppointment(appointmentId), HttpStatus.OK);
     }
 
-    @PostMapping("/delete/:appointmentID")
-    @PreAuthorize("hasRole('PATIENT')")
-    public ResponseEntity<?> deleteAppointment(@RequestParam long appointmentID) {
-        return new ResponseEntity<>(appointmentService.deleteAppointment(appointmentID), HttpStatus.OK);
+    @PostMapping("/delete")
+    @PreAuthorize("hasRole('PATIENT') and #id == authentication.principal.id")
+    public ResponseEntity<?> deleteAppointment(@RequestParam long appointmentId, @RequestParam long patientId,
+                                               @RequestParam long id, HttpServletResponse res) {
+        if (patientService.checkUserIdIsPatientId(patientId, id) <= 0) {
+            return ResponseEntity.status(StatusCode.BadRequestCode)
+                    .body(new CommonMessageDTO<>(StatusCode.BadRequestCode,
+                            "You cannot do this operation!"));
+        }
+        return new ResponseEntity<>(appointmentService.deleteAppointment(appointmentId, res), HttpStatus.OK);
     }
 
 }

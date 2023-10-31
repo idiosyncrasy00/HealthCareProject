@@ -9,16 +9,30 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.*;
 
-public class DoctorDTO {
+import java.io.Serializable;
+
+@Builder
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+public class DoctorDTO implements Serializable {
+    private long doctor_id;
+    private String fullName;
+    private String address;
+    private String doctorType;
+    private String gender;
+    private String description;
+    private String email;
+    private String phoneNumber;
 
     @Builder
     @Getter
     @Setter
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class ViewDoctorResponse {
-        private String firstName;
-        private String lastName;
+    public static class ViewDoctorResponse implements Serializable {
+        private String fullName;
         private String address;
         private String doctorType;
         private String gender;
@@ -33,8 +47,7 @@ public class DoctorDTO {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class AddDoctor {
-        private String firstName;
-        private String lastName;
+        private String fullName;
         private String address;
         private String doctorType;
         private String gender;
@@ -48,8 +61,7 @@ public class DoctorDTO {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class AddDoctorResponse {
-        private String firstName;
-        private String lastName;
+        private String fullName;
         private String address;
         private String doctorType;
         private String gender;
@@ -65,8 +77,7 @@ public class DoctorDTO {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class EditDoctor {
-        private String firstName;
-        private String lastName;
+        private String fullName;
         private String address;
         private String doctorType;
         private String gender;
@@ -81,8 +92,7 @@ public class DoctorDTO {
     @NoArgsConstructor
     public static class EditDoctorResponse {
         private long doctorID;
-        private String firstName;
-        private String lastName;
+        private String fullName;
         private String address;
         private String doctorType;
         private String gender;

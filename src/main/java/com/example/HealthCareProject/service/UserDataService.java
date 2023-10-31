@@ -62,7 +62,8 @@ public class UserDataService {
             return ResponseEntity.status(StatusCode.NotFoundCode).body(new CommonMessageDTO<>(StatusCode.NotFoundCode, "User Not found!"));
             //return ResponseEntity.notFound().build(new CommonMessageDTO<>(StatusCode.SuccessCode, "Success", checkUserDataIDExists));
         }
-        return ResponseEntity.status(StatusCode.SuccessCode).body(new CommonMessageDTO<>(StatusCode.SuccessCode, "Success", checkUserDataIDExists));
+        //return ResponseEntity.status(StatusCode.SuccessCode).body(new CommonMessageDTO<>(StatusCode.SuccessCode, "Success", checkUserDataIDExists));
+        return ResponseEntity.status(StatusCode.SuccessCode).body(new CommonMessageDTO<>(StatusCode.SuccessCode, "Success"));
     }
 
     public ResponseEntity<?> addNewUserData(UserData user) {
@@ -78,8 +79,10 @@ public class UserDataService {
         }
         userDataRepository.save(user);
         UserDataDTO userDataDTO = mapper.modelMapper().map(user, UserDataDTO.class);
+//        return ResponseEntity.ok(new CommonMessageDTO<>(StatusCode.SuccessCode,
+//                "User registered successfully!", userDataDTO));
         return ResponseEntity.ok(new CommonMessageDTO<>(StatusCode.SuccessCode,
-                "User registered successfully!", userDataDTO));
+                "User registered successfully!"));
 //        return "UserData added " + userDataDTO.toString();
     }
     public ResponseEntity<?> deleteUserData(long id) {
@@ -90,8 +93,10 @@ public class UserDataService {
         }
         System.out.println("UserData with id " + id + " deleted.");
         userDataRepository.deleteById(id);
+//        return ResponseEntity.ok(new CommonMessageDTO<>(StatusCode.SuccessCode,
+//                "UserData with id " + id + " deleted.", id));
         return ResponseEntity.ok(new CommonMessageDTO<>(StatusCode.SuccessCode,
-                "UserData with id " + id + " deleted.", id));
+                "UserData with id " + id + " deleted."));
     }
     @Transactional
     public ResponseEntity<?> updateUserData(UserDataDTO.updateUserData _updatedUserData, long userId) {
@@ -112,8 +117,10 @@ public class UserDataService {
                 currentUserData.get().setUsername(_updatedUserData.getUsername());
             }
             currentUserData.get().setUpdatedAt(DateTimeConfig.getCurrentDateTime("dd/MM/yyyy - HH:mm:ss"));
+//            return ResponseEntity.ok(new CommonMessageDTO<>(StatusCode.SuccessCode,
+//                    "User with id " + userId + " updated.", _updatedUserData));
             return ResponseEntity.ok(new CommonMessageDTO<>(StatusCode.SuccessCode,
-                    "User with id " + userId + " updated.", _updatedUserData));
+                    "User with id " + userId + " updated."));
         } else {
             return ResponseEntity.status(StatusCode.BadRequestCode).body(new CommonMessageDTO<>(StatusCode.BadRequestCode,
                     "Some fields are missing."));
