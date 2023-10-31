@@ -23,8 +23,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
                 .map(x -> x.getDefaultMessage())
                 .collect(Collectors.toList());
 
-        res.setStatus(status.value());
         return ResponseEntity.status(status.value()).body(new CommonMessageDTO<>(status.value(),
-                "Error!", errors, res));
+                "Error!", errors));
     }
 }

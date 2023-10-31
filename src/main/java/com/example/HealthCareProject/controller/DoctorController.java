@@ -9,6 +9,7 @@ import com.example.HealthCareProject.dto.DoctorDTO;
 import com.example.HealthCareProject.dto.PagingDTO;
 import com.example.HealthCareProject.entity.Appointment;
 import com.example.HealthCareProject.entity.Doctor;
+import com.example.HealthCareProject.entity.common.CustomeResponseEntity;
 import com.example.HealthCareProject.service.DoctorService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.catalina.connector.Response;
@@ -28,7 +29,6 @@ import java.util.stream.Collectors;
 @RequestMapping(path = "api/doctor")
 public class DoctorController {
     private DoctorService doctorService;
-    private HttpServletResponse res = new Response();
     @Autowired
     public DoctorController(DoctorService doctorService) {
         this.doctorService = doctorService;
@@ -36,33 +36,24 @@ public class DoctorController {
 
     @GetMapping("/view")
     @PreAuthorize("hasRole('DOCTOR') or hasRole('PATIENT')")
-    public ResponseEntity<?> viewDoctorDetails(@RequestParam("doctorId") Long doctorId) {
-
-        if (doctorService.viewDoctorDetails(doctorId) instanceof Boolean) {
-            return ResponseEntity.status(StatusCode.NotFoundCode)
-            .body(new CommonMessageDTO<>(StatusCode.NotFoundCode,
-            "doctor with id " + doctorId + " does not exist!"));
-        }
-        res.setStatus(StatusCode.SuccessCode);
-        return ResponseEntity.status(StatusCode.SuccessCode).body(new CommonMessageDTO<>(StatusCode.SuccessCode,
-                "success",doctorService.viewDoctorDetails(doctorId), res));
+    public CustomeResponseEntity<?> viewDoctorDetails(@RequestParam("doctorId") Long doctorId) {
+        return doctorService.viewDoctorDetails(doctorId);
     }
 
     @PostMapping("/add")
     @PreAuthorize("hasRole('DOCTOR') and #id == authentication.principal.id")
-    public ResponseEntity<?> registerDoctor(@RequestBody DoctorDTO.AddDoctor doctor,
+    public CustomeResponseEntity<?> registerDoctor(@RequestBody DoctorDTO.AddDoctor doctor,
                                             @RequestParam("userId") Long userId) {
         return doctorService.addNewDoctor(doctor, userId);
     }
 
     @PutMapping("/edit")
     @PreAuthorize("hasRole('DOCTOR') and #id == authentication.principal.id")
-    public ResponseEntity<?> editDoctor(@RequestBody DoctorDTO.EditDoctor doctor,
+    public CustomeResponseEntity<?> editDoctor(@RequestBody DoctorDTO.EditDoctor doctor,
                                         @RequestParam("doctorId") long doctorId, @RequestParam long id) {
         if (doctorService.checkUserIdIsDoctorId(doctorId, id) < 1) {
-            return ResponseEntity.status(StatusCode.BadRequestCode)
-                    .body(new CommonMessageDTO<>(StatusCode.BadRequestCode,
-                            "You cannot do this operation!"));
+            return new CustomeResponseEntity<>(new CommonMessageDTO(StatusCode.BadRequestCode,
+                            "You cannot do this operation!"), HttpStatus.BAD_REQUEST);
         }
         return doctorService.editDoctor(doctor, doctorId);
     }
@@ -70,35 +61,17 @@ public class DoctorController {
     //long patientId, long doctorId, int status
     @GetMapping("/view/appointments")
     @PreAuthorize("hasRole('DOCTOR') and #id == authentication.principal.id")
-    public ResponseEntity<?> viewAppointmentsByDoctor(@RequestParam String patientFullName,
+    public CustomeResponseEntity<?> viewAppointmentsByDoctor(@RequestParam String patientFullName,
                                               @RequestParam("doctorId") long doctorId,
                                               @RequestParam(required = false) Collection<Integer> status,
                                                       @RequestParam long id,
                                                       @RequestParam(defaultValue = "0") int page,
                                                       @RequestParam(defaultValue = "2") int size) {
         if (doctorService.checkUserIdIsDoctorId(doctorId, id) < 1) {
-            return ResponseEntity.status(StatusCode.BadRequestCode)
-                    .body(new CommonMessageDTO<>(StatusCode.BadRequestCode,
-                            "You cannot do this operation!"));
+            return new CustomeResponseEntity<>(new CommonMessageDTO<>(StatusCode.BadRequestCode,
+                            "You cannot do this operation!"), HttpStatus.BAD_REQUEST);
         }
-
-        if (doctorService.getAppointments(patientFullName, doctorId, status, page, size).isEmpty()) {
-            return ResponseEntity.status(StatusCode.NotFoundCode)
-                    .body(
-                            CommonMessageDTO.builder()
-                                    .statusCode(StatusCode.NotFoundCode)
-                                    .messageDetails("There are no available appointments!")
-                                    .build()
-                    );
-        }
-        List<AppointmentDTO> results = doctorService.getAppointments(patientFullName, doctorId, status, page, size);
-        return ResponseEntity.status(StatusCode.SuccessCode)
-                .body(
-            CommonMessageDTO.builder()
-                    .statusCode(StatusCode.SuccessCode)
-                    .messageDetails("Success")
-                    .result(results)
-                    .build()
-                );
+        //List<AppointmentDTO> results = doctorService.getAppointments(patientFullName, doctorId, status, page, size);
+        return doctorService.getAppointments(patientFullName, doctorId, status, page, size);
     }
 }

@@ -4,6 +4,7 @@ import com.example.HealthCareProject.consts.StatusCode;
 import com.example.HealthCareProject.dto.CommonMessageDTO;
 import com.example.HealthCareProject.dto.PatientDTO;
 import com.example.HealthCareProject.entity.Appointment;
+import com.example.HealthCareProject.entity.common.CustomeResponseEntity;
 import com.example.HealthCareProject.service.AppointmentService;
 import com.example.HealthCareProject.service.DoctorService;
 import com.example.HealthCareProject.service.PatientService;
@@ -37,48 +38,45 @@ public class AppointmentController {
 
     @PostMapping("/make")
     @PreAuthorize("hasRole('PATIENT') and #id == authentication.principal.id")
-    public CommonMessageDTO makeAppointment(@RequestBody Appointment appointment,
-                                             @RequestParam long id, HttpServletResponse res
-    ) throws ServletException, IOException {
-        return appointmentService.makeAppointment(appointment, id, res);
+    public CustomeResponseEntity<?> makeAppointment(@RequestBody Appointment appointment,
+                                                    @RequestParam long id
+    ) {
+        return appointmentService.makeAppointment(appointment, id);
     }
 
     @PostMapping("/accept")
     @PreAuthorize("hasRole('DOCTOR') and #id == authentication.principal.id")
-    public ResponseEntity<?> acceptAppointment(@RequestParam long appointmentId,
+    public CustomeResponseEntity<?> acceptAppointment(@RequestParam long appointmentId,
                                                @RequestParam long doctorId,
                                                @RequestParam long id
     ) {
         if (doctorService.checkUserIdIsDoctorId(doctorId, id) <= 0) {
-            return ResponseEntity.status(StatusCode.BadRequestCode)
-                    .body(new CommonMessageDTO<>(StatusCode.BadRequestCode,
-                            "You cannot do this operation!"));
+            return new CustomeResponseEntity<>(new CommonMessageDTO<>(StatusCode.BadRequestCode,
+                            "You cannot do this operation!"), HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(appointmentService.acceptAppointment(appointmentId, doctorId), HttpStatus.OK);
+        return appointmentService.acceptAppointment(appointmentId, doctorId);
     }
 
     @PostMapping("/reject")
     @PreAuthorize("hasRole('DOCTOR') and #id == authentication.principal.id")
-    public ResponseEntity<?> rejectAppointment(@RequestParam long appointmentId, @RequestParam long doctorId,
+    public CustomeResponseEntity<?> rejectAppointment(@RequestParam long appointmentId, @RequestParam long doctorId,
                                                @RequestParam long id) {
         if (doctorService.checkUserIdIsDoctorId(doctorId, id) <= 0) {
-            return ResponseEntity.status(StatusCode.BadRequestCode)
-                    .body(new CommonMessageDTO<>(StatusCode.BadRequestCode,
-                            "You cannot do this operation!"));
+            return new CustomeResponseEntity(new CommonMessageDTO<>(StatusCode.BadRequestCode,
+                            "You cannot do this operation!"), HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(appointmentService.rejectAppointment(appointmentId), HttpStatus.OK);
+        return appointmentService.rejectAppointment(appointmentId);
     }
 
     @PostMapping("/delete")
     @PreAuthorize("hasRole('PATIENT') and #id == authentication.principal.id")
-    public ResponseEntity<?> deleteAppointment(@RequestParam long appointmentId, @RequestParam long patientId,
-                                               @RequestParam long id, HttpServletResponse res) {
+    public CustomeResponseEntity<?> deleteAppointment(@RequestParam long appointmentId, @RequestParam long patientId,
+                                               @RequestParam long id) {
         if (patientService.checkUserIdIsPatientId(patientId, id) <= 0) {
-            return ResponseEntity.status(StatusCode.BadRequestCode)
-                    .body(new CommonMessageDTO<>(StatusCode.BadRequestCode,
-                            "You cannot do this operation!"));
+            return new CustomeResponseEntity(new CommonMessageDTO<>(StatusCode.BadRequestCode,
+                            "You cannot do this operation!"), HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(appointmentService.deleteAppointment(appointmentId, res), HttpStatus.OK);
+        return appointmentService.deleteAppointment(appointmentId);
     }
 
 }

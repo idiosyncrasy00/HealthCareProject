@@ -3,6 +3,7 @@ package com.example.HealthCareProject.controller;
 import com.example.HealthCareProject.consts.StatusCode;
 import com.example.HealthCareProject.dto.CommonMessageDTO;
 import com.example.HealthCareProject.dto.PatientDTO;
+import com.example.HealthCareProject.entity.common.CustomeResponseEntity;
 import com.example.HealthCareProject.repository.HealthRecordRepository;
 import com.example.HealthCareProject.service.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,52 +28,32 @@ public class PatientController {
 
     @GetMapping("/view/appointments")
     @PreAuthorize("hasRole('PATIENT') and #id == authentication.principal.id")
-    public ResponseEntity<?> getAppointmentsFromPatient(@RequestParam long patientId,
-                                                        @RequestParam String doctorFullName,
-                                                        @RequestParam(required = false) Collection<Integer> status,
-                                                        @RequestParam long id,
-                                                        @RequestParam(defaultValue = "0") int page,
-                                                        @RequestParam(defaultValue = "2") int size) {
+    public CustomeResponseEntity<?> getAppointmentsFromPatient(@RequestParam long patientId,
+                                                               @RequestParam String doctorFullName,
+                                                               @RequestParam(required = false) Collection<Integer> status,
+                                                               @RequestParam long id,
+                                                               @RequestParam(defaultValue = "0") int page,
+                                                               @RequestParam(defaultValue = "2") int size) {
         if (patientService.checkUserIdIsPatientId(patientId, id) < 1) {
-            return ResponseEntity.status(StatusCode.BadRequestCode)
-                    .body(new CommonMessageDTO<>(StatusCode.BadRequestCode,
-                            "You cannot do this operation!"));
+            return new CustomeResponseEntity<>(new CommonMessageDTO<>(StatusCode.BadRequestCode,
+                            "You cannot do this operation!"), HttpStatus.BAD_REQUEST);
         }
-        if (patientService.getAppointments(patientId, doctorFullName, status, page, size).isEmpty()) {
-            return ResponseEntity.status(StatusCode.NotFoundCode)
-                    .body(
-                    CommonMessageDTO.builder()
-                            .statusCode(StatusCode.NotFoundCode)
-                            .messageDetails("There are no available appointments!")
-                            .build()
-                    );
-        }
-
-        return ResponseEntity.status(StatusCode.SuccessCode)
-                .body(
-                CommonMessageDTO.builder()
-                        .statusCode(StatusCode.SuccessCode)
-                        .messageDetails("Success")
-                        .result(patientService.getAppointments(patientId, doctorFullName, status, page, size))
-                        .build()
-                );
-        //return patientService.getAppointments(patientId, doctorFullName, status, page, size);
+        return patientService.getAppointments(patientId, doctorFullName, status, page, size);
     }
 
     @PostMapping("/add")
     @PreAuthorize("hasRole('PATIENT') and #id == authentication.principal.id")
-    public ResponseEntity<?> registerPatient(@RequestBody PatientDTO.AddPatient patient, @RequestParam long id) {
+    public CustomeResponseEntity<?> registerPatient(@RequestBody PatientDTO.AddPatient patient, @RequestParam long id) {
         return patientService.addNewPatient(patient, id);
     }
 
     @PutMapping("/edit")
     @PreAuthorize("hasRole('PATIENT') and #id == authentication.principal.id")
-    public ResponseEntity<?> editPatient(@RequestBody PatientDTO.EditPatient patient, @RequestParam("patientId") long patientId,
+    public CustomeResponseEntity<?> editPatient(@RequestBody PatientDTO.EditPatient patient, @RequestParam("patientId") long patientId,
                                          @RequestParam long id) {
         if (patientService.checkUserIdIsPatientId(patientId, id) < 1) {
-            return ResponseEntity.status(StatusCode.BadRequestCode)
-                    .body(new CommonMessageDTO<>(StatusCode.BadRequestCode,
-                            "You cannot do this operation!"));
+            return new CustomeResponseEntity<>(new CommonMessageDTO<>(StatusCode.BadRequestCode,
+                            "You cannot do this operation!"), HttpStatus.BAD_REQUEST);
         }
         return patientService.editPatient(patient, patientId);
     }

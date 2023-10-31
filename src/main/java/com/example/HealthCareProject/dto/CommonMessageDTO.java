@@ -14,7 +14,6 @@ public class CommonMessageDTO<T> implements Serializable {
     protected int statusCode;
     protected String messageDetails = "success";
     protected T result;
-    protected HttpServletResponse httpResponse;
 
     public CommonMessageDTO(int statusCode, String messageDetails) {
         this.statusCode = statusCode;

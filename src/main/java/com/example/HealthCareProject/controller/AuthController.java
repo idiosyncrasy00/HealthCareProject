@@ -72,13 +72,12 @@ public class AuthController {
                 .map(item -> item.getAuthority())
                 .collect(Collectors.toList());
         System.out.println("ROles " + roles.toString());
-        res.setStatus(StatusCode.SuccessCode);
         return ResponseEntity.ok(new CommonMessageDTO<JwtResponse>(StatusCode.SuccessCode, "Login successfully",
                     new JwtResponse(jwt,
                 userDetails.getId(),
                 userDetails.getUsername(),
                 userDetails.getEmail(),
-                roles), res));
+                roles)));
     }
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@RequestBody @Valid UserDataDTO.RegisterRequest signUpRequest) {

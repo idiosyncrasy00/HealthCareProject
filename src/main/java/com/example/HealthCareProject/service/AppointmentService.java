@@ -8,6 +8,7 @@ import com.example.HealthCareProject.entity.Appointment;
 import com.example.HealthCareProject.entity.Doctor;
 import com.example.HealthCareProject.entity.Patient;
 import com.example.HealthCareProject.entity.UserData;
+import com.example.HealthCareProject.entity.common.CustomeResponseEntity;
 import com.example.HealthCareProject.repository.AppointmentRepository;
 import com.example.HealthCareProject.repository.DoctorRepository;
 import com.example.HealthCareProject.repository.PatientRepository;
@@ -46,36 +47,23 @@ public class AppointmentService {
 //        Optional<Appointment> appointmentList = appointmentRepository.
 //    }
 
-//    @Cacheable("appointments_patient")
-    public CommonMessageDTO makeAppointment(Appointment appointmentBody, long id, HttpServletResponse res) throws ServletException, IOException {
+    public CustomeResponseEntity<?> makeAppointment(Appointment appointmentBody, long id) {
         long patientId = appointmentBody.getPatient().getId();
         long doctorId = appointmentBody.getDoctor().getId();
         Optional<Patient> patient = patientRepository.findById(patientId);
         if (!patient.isPresent()) {
-//            return ResponseEntity.status(StatusCode.NotFoundCode)
-//                    .body(new CommonMessageDTO<>(StatusCode.NotFoundCode,
-//                            "patient with id " + patientId + " does not exist!"));
-            res.setStatus(StatusCode.NotFoundCode);
-            return new CommonMessageDTO<>(StatusCode.NotFoundCode,
-                    "patient with id " + patientId + " does not exist!", null, res);
+            return new CustomeResponseEntity<>(new CommonMessageDTO<>(StatusCode.NotFoundCode,
+                            "patient with id " + patientId + " does not exist!"), HttpStatus.NOT_FOUND);
         }
         Optional<Doctor> doctor = doctorRepository.findById(doctorId);
         if (!doctor.isPresent()) {
-//            return ResponseEntity.status(StatusCode.NotFoundCode)
-//                    .body(new CommonMessageDTO<>(StatusCode.NotFoundCode,
-//                            "doctor with id " + doctorId + " does not exist!"));
-            res.setStatus(StatusCode.NotFoundCode);
-            return new CommonMessageDTO<>(StatusCode.NotFoundCode,
-                    "doctor with id " + doctorId + " does not exist!", null, res);
+            return new CustomeResponseEntity<>(new CommonMessageDTO<>(StatusCode.NotFoundCode,
+                    "doctor with id " + doctorId + " does not exist!"), HttpStatus.NOT_FOUND);
         }
 
         if (patientRepository.checkUserIdIsPatientId(patientId, id) <= 0) {
-//            return ResponseEntity.status(StatusCode.BadRequestCode)
-//                    .body(new CommonMessageDTO<>(StatusCode.BadRequestCode,
-//                        "You cannot do this operation!"));
-            res.setStatus(StatusCode.BadRequestCode);
-            return new CommonMessageDTO<>(StatusCode.BadRequestCode,
-                    "You cannot do this operation!", null, res);
+            return new CustomeResponseEntity<>(new CommonMessageDTO<>(StatusCode.BadRequestCode,
+                    "You cannot do this operation!"), HttpStatus.BAD_REQUEST);
         }
 
         appointmentRepository.save(
@@ -89,68 +77,61 @@ public class AppointmentService {
                 .status(appointmentBody.getStatus())
                 .message(appointmentBody.getMessage())
                 .build();
-//        return ResponseEntity.status(StatusCode.SuccessCode).body(
-//                new CommonMessageDTO<>(StatusCode.SuccessCode, "success",
-//                        response));
-        res.setStatus(StatusCode.SuccessCode);
-        return new CommonMessageDTO<>(StatusCode.SuccessCode, "success",
-                response, res);
+        return new CustomeResponseEntity<>(new CommonMessageDTO<>(StatusCode.SuccessCode, "success",
+                        response), HttpStatus.OK);
     }
 
     //ResponseEntity<?>
     @Transactional
-    public ResponseEntity<?> deleteAppointment(long appointmentID, HttpServletResponse res) {
+    public CustomeResponseEntity<?> deleteAppointment(long appointmentID) {
         Optional<Appointment> appointment = appointmentRepository.findById(appointmentID);
                 //.orElseThrow(() -> new IllegalStateException("Appoint with id " + appointmentID + " does not exist!"));
         if (!appointment.isPresent()) {
-            return ResponseEntity.status(StatusCode.NotFoundCode).body(
-                    new CommonMessageDTO<>(StatusCode.NotFoundCode,
-                            "Appoint with id " + appointmentID + " does not exist!"
-                    ));
+            return new CustomeResponseEntity<>(new CommonMessageDTO<>(StatusCode.NotFoundCode,
+                    "Appoint with id " + appointmentID + " does not exist!"
+            ), HttpStatus.NOT_FOUND);
         }
         appointmentRepository.deleteById(appointmentID);
         AppointmentDTO.AppointmentDeletedResponse response = AppointmentDTO.AppointmentDeletedResponse.builder()
                 .id(appointmentID)
                 .build();
-        res.setStatus(StatusCode.SuccessCode);
-        return ResponseEntity.status(StatusCode.SuccessCode).body(
-                new CommonMessageDTO<>(StatusCode.SuccessCode, "appointment cancelled successfully", response, res
-        ));
-//        return response;
+        return new CustomeResponseEntity<>(new CommonMessageDTO<>(StatusCode.SuccessCode,
+                "appointment cancelled successfully"
+        ), HttpStatus.OK);
     }
 
     @Transactional
-    public ResponseEntity<?> acceptAppointment(long appointmentID, long doctorId) {
+    public CustomeResponseEntity<?> acceptAppointment(long appointmentID, long doctorId) {
         Optional<Appointment> appointment = appointmentRepository.findById(appointmentID);
-        //.orElseThrow(() -> new IllegalStateException("Appoint with id " + appointmentID + " does not exist!"));
         if (!appointment.isPresent()) {
-            return ResponseEntity.status(StatusCode.NotFoundCode).body(
-            new CommonMessageDTO<>(StatusCode.NotFoundCode,
+            return new CustomeResponseEntity<>(new CommonMessageDTO<>(StatusCode.NotFoundCode,
                     "Appoint with id " + appointmentID + " does not exist!"
-            ));
+            ), HttpStatus.NOT_FOUND);
         }
         appointment.get().setStatus(1);
         appointment.get().setUpdatedAt(DateTimeConfig.getCurrentDateTime("dd/MM/yyyy - HH:mm:ss"));
         String patientName = appointment.get().getPatient().getFullName();
-        return ResponseEntity.status(StatusCode.SuccessCode).body(
-                new CommonMessageDTO<>(StatusCode.SuccessCode, "appointment accepted for patient " + patientName));
+
+        return new CustomeResponseEntity<>(new CommonMessageDTO<>(StatusCode.SuccessCode,
+                "appointment accepted for patient " + patientName
+        ), HttpStatus.OK);
     }
 
     @Transactional
-    public ResponseEntity<?> rejectAppointment(long appointmentID) {
+    public CustomeResponseEntity<?> rejectAppointment(long appointmentID) {
         Optional<Appointment> appointment = appointmentRepository.findById(appointmentID);
         //.orElseThrow(() -> new IllegalStateException("Appoint with id " + appointmentID + " does not exist!"));
         if (!appointment.isPresent()) {
-            return ResponseEntity.status(StatusCode.NotFoundCode).body(
-                    new CommonMessageDTO<>(StatusCode.NotFoundCode,
-                            "Appoint with id " + appointmentID + " does not exist!"
-                    ));
+            return new CustomeResponseEntity<>(new CommonMessageDTO<>(StatusCode.NotFoundCode,
+                    "Appoint with id " + appointmentID + " does not exist!"
+            ), HttpStatus.NOT_FOUND);
         }
         appointment.get().setStatus(2);
         appointment.get().setUpdatedAt(DateTimeConfig.getCurrentDateTime("dd/MM/yyyy - HH:mm:ss"));
         String patientName = appointment.get().getPatient().getFullName();
-        return ResponseEntity.status(StatusCode.SuccessCode).body(
-                new CommonMessageDTO<>(StatusCode.SuccessCode, "appointment rejected for patient " + patientName));
+        return new CustomeResponseEntity<>(new CommonMessageDTO<>(StatusCode.SuccessCode,
+                "appointment rejected for patient " + patientName
+        ), HttpStatus.OK);
     }
 
 }

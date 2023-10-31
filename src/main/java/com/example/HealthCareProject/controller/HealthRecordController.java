@@ -4,6 +4,7 @@ import com.example.HealthCareProject.consts.StatusCode;
 import com.example.HealthCareProject.dto.CommonMessageDTO;
 import com.example.HealthCareProject.dto.HealthRecordDTO;
 import com.example.HealthCareProject.entity.HealthRecord;
+import com.example.HealthCareProject.entity.common.CustomeResponseEntity;
 import com.example.HealthCareProject.repository.HealthRecordRepository;
 import com.example.HealthCareProject.service.DoctorService;
 import com.example.HealthCareProject.service.HealthRecordService;
@@ -30,58 +31,56 @@ public class HealthRecordController {
 
     @GetMapping(value="/view/patient")
     @PreAuthorize("hasRole('PATIENT') and #id == authentication.principal.id")
-    public ResponseEntity<?> viewHealthRecordByPatient(@RequestParam("patientId") Long patientId,
+    public CustomeResponseEntity<?> viewHealthRecordByPatient(@RequestParam("patientId") Long patientId,
                                                        @RequestParam("healthRecordId") Long healthRecordId,
     @RequestParam Long id) {
         if (patientService.checkUserIdIsPatientId(patientId, id) < 1) {
-            return ResponseEntity.status(StatusCode.BadRequestCode)
-                    .body(new CommonMessageDTO<>(StatusCode.BadRequestCode,
-                            "You cannot do this operation!"));
+            return new CustomeResponseEntity(new CommonMessageDTO<>(StatusCode.BadRequestCode,
+                            "You cannot do this operation!"), HttpStatus.BAD_REQUEST);
         }
         return healthRecordService.viewHealthRecordByPatient(healthRecordId, patientId);
     }
 
     @GetMapping("/view/doctor")
     @PreAuthorize("hasRole('DOCTOR') and #id == authentication.principal.id")
-    public ResponseEntity<?> viewHealthRecordByDoctor(@RequestParam("doctorId") Long doctorId,
+    public CustomeResponseEntity<?> viewHealthRecordByDoctor(@RequestParam("doctorId") Long doctorId,
                                                       @RequestParam("patientId") Long patientId,
                                                       @RequestParam Long id) {
         if (doctorService.checkUserIdIsDoctorId(doctorId, id) < 1) {
-            return ResponseEntity.status(StatusCode.BadRequestCode)
-                    .body(new CommonMessageDTO<>(StatusCode.BadRequestCode,
-                            "You cannot do this operation!"));
+            return new CustomeResponseEntity<>(new CommonMessageDTO<>(StatusCode.BadRequestCode,
+                            "You cannot do this operation!"), HttpStatus.BAD_REQUEST);
         }
         return healthRecordService.viewHealthRecordByDoctor(doctorId,patientId);
     }
 
     @PostMapping("/add")
     @PreAuthorize("hasRole('PATIENT') and #id == authentication.principal.id")
-    public ResponseEntity<?> addHealthRecord(@RequestBody HealthRecordDTO healthRecordDTO,
+    public CustomeResponseEntity<?> addHealthRecord(@RequestBody HealthRecordDTO healthRecordDTO,
                                              @RequestParam long id,
                                              @RequestParam long patientId) {
         if (patientService.checkUserIdIsPatientId(patientId, id) < 1) {
-            return ResponseEntity.status(StatusCode.BadRequestCode)
-                    .body(new CommonMessageDTO<>(StatusCode.BadRequestCode,
-                            "You cannot do this operation!"));
+//            return ResponseEntity.status(StatusCode.BadRequestCode)
+//                    .body(new CommonMessageDTO<>(StatusCode.BadRequestCode,
+//                            "You cannot do this operation!"));
+            return new CustomeResponseEntity<>(new CommonMessageDTO<>(StatusCode.BadRequestCode,
+                    "You cannot do this operation!"), HttpStatus.BAD_REQUEST);
         }
         return healthRecordService.addHealthRecord(healthRecordDTO, id, patientId);
     }
 
     @PutMapping("/edit")
     @PreAuthorize("hasRole('PATIENT') and #id == authentication.principal.id")
-    public ResponseEntity<?> editHealthRecord(@RequestBody HealthRecordDTO editHealthRecordDTO,
+    public CustomeResponseEntity<?> editHealthRecord(@RequestBody HealthRecordDTO editHealthRecordDTO,
                                               @RequestParam("healthRecordID") Long healthRecordID,
                                               @RequestParam Long patientId,
                                               @RequestParam long id) {
         if (patientService.checkUserIdIsPatientId(patientId, id) < 1) {
-            return ResponseEntity.status(StatusCode.BadRequestCode)
-                    .body(new CommonMessageDTO<>(StatusCode.BadRequestCode,
-                            "You cannot do this operation!"));
+            return new CustomeResponseEntity<>(new CommonMessageDTO<>(StatusCode.BadRequestCode,
+                    "You cannot do this operation!"), HttpStatus.BAD_REQUEST);
         }
         if (healthRecordRepository.checkHealthRecordIdIsPatientId(healthRecordID, patientId) < 1) {
-            return ResponseEntity.status(StatusCode.BadRequestCode)
-                    .body(new CommonMessageDTO<>(StatusCode.BadRequestCode,
-                            "You cannot do this operation!"));
+            return new CustomeResponseEntity<>(new CommonMessageDTO<>(StatusCode.BadRequestCode,
+                    "You cannot do this operation!"), HttpStatus.BAD_REQUEST);
         }
         return healthRecordService.editHealthRecord(editHealthRecordDTO, healthRecordID, patientId);
     }
