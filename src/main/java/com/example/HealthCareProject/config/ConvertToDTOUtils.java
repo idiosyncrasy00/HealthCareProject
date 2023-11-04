@@ -56,13 +56,18 @@ public class ConvertToDTOUtils {
                 .build();
     }
 
-    public static AppointmentDTO convertToAppointDetailsDTOPatient(Appointment appointment) {
+    public static AppointmentDTO convertToAppointDetailsDTOPatient(Appointment appointment, Page<Appointment> appointmentPage) {
         return AppointmentDTO.builder()
                 .id(appointment.getId())
                 .doctorDTO(ConvertToDTOUtils.convertToDoctorDTO(appointment.getDoctor()))
                 .appointmentTime(appointment.getAppointmentTime())
                 .message(appointment.getMessage())
                 .status(appointment.getStatus())
+                .pagingDTO(PagingDTO.builder()
+                        .totalPages(appointmentPage.getTotalPages())
+                        .currentPage(appointmentPage.getNumber())
+                        .totalRecords(appointmentPage.getTotalElements())
+                        .build())
                 .build();
     }
 }

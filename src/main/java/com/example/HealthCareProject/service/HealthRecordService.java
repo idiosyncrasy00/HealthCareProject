@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-@Transactional
 public class HealthRecordService {
     private final HealthRecordRepository healthRecordRepository;
     private final PatientRepository patientRepository;
@@ -72,6 +71,7 @@ public class HealthRecordService {
         return new CustomeResponseEntity<>(new CommonMessageDTO(StatusCode.SuccessCode, viewHealthRecordDTO), HttpStatus.OK);
     }
 
+    @Transactional
     public CustomeResponseEntity<?> addHealthRecord(HealthRecordDTO healthRecordDTO, long id, long patientId) {
 //        long patientID = healthRecord.getPatient().getId();
         boolean isPatient = patientRepository.findById(patientId).isPresent();

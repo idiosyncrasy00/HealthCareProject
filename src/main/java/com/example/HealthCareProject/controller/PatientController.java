@@ -6,6 +6,7 @@ import com.example.HealthCareProject.dto.PatientDTO;
 import com.example.HealthCareProject.entity.common.CustomeResponseEntity;
 import com.example.HealthCareProject.repository.HealthRecordRepository;
 import com.example.HealthCareProject.service.PatientService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
@@ -33,7 +34,7 @@ public class PatientController {
                                                                @RequestParam(required = false) Collection<Integer> status,
                                                                @RequestParam long id,
                                                                @RequestParam(defaultValue = "0") int page,
-                                                               @RequestParam(defaultValue = "2") int size) {
+                                                               @RequestParam(defaultValue = "2") int size) throws JsonProcessingException {
         if (patientService.checkUserIdIsPatientId(patientId, id) < 1) {
             return new CustomeResponseEntity<>(new CommonMessageDTO<>(StatusCode.BadRequestCode,
                             "You cannot do this operation!"), HttpStatus.BAD_REQUEST);

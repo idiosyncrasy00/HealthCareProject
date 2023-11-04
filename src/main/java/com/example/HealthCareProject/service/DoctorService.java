@@ -35,7 +35,6 @@ import java.util.stream.Stream;
 import static java.util.stream.Collectors.toList;
 
 @Service
-@Transactional
 @EnableCaching
 public class DoctorService {
     private final DoctorRepository doctorRepository;
@@ -92,6 +91,7 @@ public class DoctorService {
         return new CustomeResponseEntity<>(new CommonMessageDTO<>(StatusCode.SuccessCode,
                 response), HttpStatus.OK);
     }
+    @Transactional
     public CustomeResponseEntity<?> addNewDoctor(DoctorDTO.AddDoctor addedDoctor, long userId) {
             //find user
             //find user id?

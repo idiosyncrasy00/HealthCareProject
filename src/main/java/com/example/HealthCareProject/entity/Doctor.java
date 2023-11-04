@@ -18,7 +18,7 @@ import java.io.Serializable;
 @Entity
 @Table(name = "Doctor"
 )
-public class Doctor extends Common implements Serializable {
+public class Doctor extends Common {
     @Column(name="fullName")
     private String fullName;
     @Column(name="address")

@@ -12,7 +12,7 @@ import java.util.Date;
 @Getter
 @Setter
 @AllArgsConstructor
-public class AppointmentDTO extends Common implements Serializable {
+public class AppointmentDTO extends Common {
     private Long id;
     private PatientDTO patientInfo;
     private DoctorDTO doctorDTO;
@@ -22,7 +22,7 @@ public class AppointmentDTO extends Common implements Serializable {
     private PagingDTO pagingDTO;
 
     @Builder
-    public static class makeAppointmentResponse implements Serializable {
+    public static class makeAppointmentResponse {
         private long id;
         private long doctorId;
         private long patientId;

@@ -28,7 +28,6 @@ import java.io.IOException;
 import java.util.Optional;
 
 @Service
-@Transactional
 @EnableCaching
 public class AppointmentService {
     private final DoctorRepository doctorRepository;
@@ -47,6 +46,7 @@ public class AppointmentService {
 //        Optional<Appointment> appointmentList = appointmentRepository.
 //    }
 
+    @Transactional
     public CustomeResponseEntity<?> makeAppointment(Appointment appointmentBody, long id) {
         long patientId = appointmentBody.getPatient().getId();
         long doctorId = appointmentBody.getDoctor().getId();

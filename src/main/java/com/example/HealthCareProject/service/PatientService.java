@@ -1,6 +1,7 @@
 package com.example.HealthCareProject.service;
 
 import com.example.HealthCareProject.config.ConvertToDTOUtils;
+import com.example.HealthCareProject.config.Utils;
 import com.example.HealthCareProject.consts.StatusCode;
 import com.example.HealthCareProject.dto.AppointmentDTO;
 import com.example.HealthCareProject.dto.CommonMessageDTO;
@@ -9,9 +10,13 @@ import com.example.HealthCareProject.entity.Appointment;
 import com.example.HealthCareProject.entity.Patient;
 import com.example.HealthCareProject.entity.UserData;
 import com.example.HealthCareProject.entity.common.CustomeResponseEntity;
+import com.example.HealthCareProject.entity.common.Deserializing;
+import com.example.HealthCareProject.entity.common.HttpStatusMixIn;
 import com.example.HealthCareProject.repository.AppointmentRepository;
 import com.example.HealthCareProject.repository.PatientRepository;
 import com.example.HealthCareProject.repository.UserDataRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import org.apache.catalina.connector.Response;
@@ -30,7 +35,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
 @EnableCaching
 public class PatientService {
     private final PatientRepository patientRepository;
@@ -44,13 +48,14 @@ public class PatientService {
         this.appointmentRepository = appointmentRepository;
     }
 
-    @Cacheable("patient")
+    //@Cacheable(cacheNames="patient", key="#doctorId||#userId",sync=true)
     public int checkUserIdIsPatientId(long doctorId, long userId) {
         return patientRepository.checkUserIdIsPatientId(doctorId, userId);
     }
 
-    @Cacheable("appointments_patient")
-    public CustomeResponseEntity<?> getAppointments(long patientId, String doctorFullName, Collection<Integer> status, int page, int size) {
+    //, key="#patientId + '_' + #doctorFullName"
+    @Cacheable(cacheNames="appointments_patient")
+    public CustomeResponseEntity<?> getAppointments(long patientId, String doctorFullName, Collection<Integer> status, int page, int size) throws JsonProcessingException {
         Page<Appointment> results;
         Pageable paging = PageRequest.of(page, size);
         if (status.isEmpty()) {
@@ -66,7 +71,15 @@ public class PatientService {
                                     .build(), HttpStatus.NOT_FOUND
                     );
         }
-        List<AppointmentDTO> appointmentList = results.getContent().stream().map(ConvertToDTOUtils::convertToAppointDetailsDTOPatient).collect(Collectors.toList());
+        List<AppointmentDTO> appointmentList = results.getContent().stream().map(
+                result -> ConvertToDTOUtils.convertToAppointDetailsDTOPatient(result, results)).collect(Collectors.toList());
+//        return Deserializing.deserializeEntity(new CustomeResponseEntity<>(
+//                CommonMessageDTO.builder()
+//                        .statusCode(StatusCode.SuccessCode)
+//                        .result(appointmentList)
+//                        .build(), HttpStatus.OK
+//        ));
+        Utils.doLongRunningTask();
         return new CustomeResponseEntity<>(
                 CommonMessageDTO.builder()
                         .statusCode(StatusCode.SuccessCode)
@@ -75,6 +88,7 @@ public class PatientService {
         );
     }
 
+    @Transactional
     public CustomeResponseEntity<?> addNewPatient(PatientDTO.AddPatient addedPatient, long userId) {
         //find user
         //find user id?
@@ -102,6 +116,7 @@ public class PatientService {
                 "Patient from user id " + userId + " added.", response), HttpStatus.OK);
     }
 
+    @Cacheable(cacheNames="edit_patient")
     @Transactional
     public CustomeResponseEntity<?> editPatient(PatientDTO.EditPatient patient, long patientId) {
         //find user id?

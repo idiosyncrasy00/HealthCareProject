@@ -41,6 +41,7 @@ public class RedisConfig {
                 .withCacheConfiguration("patient", myDefaultCacheConfig(Duration.ofMinutes(1)))
                 .withCacheConfiguration("appointments_patient", myDefaultCacheConfig(Duration.ofMinutes(1)))
                 .withCacheConfiguration("appointments_doctor", myDefaultCacheConfig(Duration.ofMinutes(1)))
+                .withCacheConfiguration("edit_patient", myDefaultCacheConfig(Duration.ofMinutes(1)))
                 .build();
     }
 

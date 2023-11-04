@@ -22,7 +22,7 @@ import java.util.Date;
 @Entity
 @Table(name = "Appointment"
 )
-public class Appointment extends Common implements Serializable {
+public class Appointment extends Common {
 //    @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)

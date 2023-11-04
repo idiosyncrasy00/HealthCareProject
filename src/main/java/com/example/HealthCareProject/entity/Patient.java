@@ -19,7 +19,7 @@ import java.util.Date;
 @Entity
 @Table(name = "Patient"
 )
-public class Patient extends Common implements Serializable {
+public class Patient extends Common {
 
     @Column(name="fullName")
     private String fullName;
