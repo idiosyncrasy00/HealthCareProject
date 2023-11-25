@@ -65,16 +65,14 @@ public class DoctorService {
             return new CustomeResponseEntity<>(new CommonMessageDTO<>(StatusCode.NotFoundCode,
                     "There are no available appointments!"), HttpStatus.NOT_FOUND);
         }
-        List<AppointmentDTO> appointmentList = results.getContent().stream().map(result -> ConvertToDTOUtils.convertToAppointDetailsDTO(result, results)).collect(Collectors.toList());
-        return new CustomeResponseEntity<>(new CommonMessageDTO<>(StatusCode.SuccessCode,
-                appointmentList), HttpStatus.OK);
+        List<AppointmentDTO> appointmentList = results.getContent().stream().map(result -> ConvertToDTOUtils.convertToAppointDetailsDTO(result)).collect(Collectors.toList());
+        return new CustomeResponseEntity<>(new CommonMessageDTO<>(StatusCode.SuccessCode, "sucess",
+                appointmentList, ConvertToDTOUtils.convertToPagingDTO(results)), HttpStatus.OK);
     }
 
     @Cacheable("doctor")
     public CustomeResponseEntity<?> viewDoctorDetails(long doctorId) {
-        boolean isDoctorPresent = true;
         Optional<Doctor> doctor = doctorRepository.findByDoctorID(doctorId);
-                //.orElseThrow(() -> new IllegalStateException("doctor with id " + doctorId + " does not exist!"));
         if (!doctor.isPresent()) {
             return new CustomeResponseEntity(new CommonMessageDTO<>(StatusCode.NotFoundCode,
                     "doctor with id " + doctorId + " does not exist!"), HttpStatus.NOT_FOUND);
@@ -96,7 +94,6 @@ public class DoctorService {
             //find user
             //find user id?
             Optional<UserData> userData = userDataRepository.findById(userId);
-//                    .orElseThrow(() -> new IllegalStateException("user with id " + userId + " does not exist!"));
         if (userData.isEmpty()) {
             return new CustomeResponseEntity<>(new CommonMessageDTO<>(StatusCode.NotFoundCode,
                     "user with id " + userId + " does not exist!"), HttpStatus.NOT_FOUND);

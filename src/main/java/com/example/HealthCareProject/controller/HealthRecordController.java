@@ -25,8 +25,10 @@ public class HealthRecordController {
     private PatientService patientService;
     private DoctorService doctorService;
     @Autowired
-    public HealthRecordController(HealthRecordService healthRecordService) {
+    public HealthRecordController(HealthRecordService healthRecordService, DoctorService doctorService, PatientService patientService) {
         this.healthRecordService = healthRecordService;
+        this.doctorService = doctorService;
+        this.patientService = patientService;
     }
 
     @GetMapping(value="/view/patient")

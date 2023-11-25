@@ -73,8 +73,9 @@ public class AppointmentService {
                 .id(appointmentBody.getId())
                 .patientId(appointmentBody.getPatient().getId())
                 .doctorId(appointmentBody.getDoctor().getId())
-                .appointmentTime(appointmentBody.getAppointmentTime())
-                .status(appointmentBody.getStatus())
+                //.appointmentTime(appointmentBody.getAppointmentTime())
+                .appointmentSlotId(appointmentBody.getAppointmentSlot().getId())
+                //.status(appointmentBody.getStatus())
                 .message(appointmentBody.getMessage())
                 .build();
         return new CustomeResponseEntity<>(new CommonMessageDTO<>(StatusCode.SuccessCode, "success",
@@ -100,39 +101,39 @@ public class AppointmentService {
         ), HttpStatus.OK);
     }
 
-    @Transactional
-    public CustomeResponseEntity<?> acceptAppointment(long appointmentID, long doctorId) {
-        Optional<Appointment> appointment = appointmentRepository.findById(appointmentID);
-        if (!appointment.isPresent()) {
-            return new CustomeResponseEntity<>(new CommonMessageDTO<>(StatusCode.NotFoundCode,
-                    "Appoint with id " + appointmentID + " does not exist!"
-            ), HttpStatus.NOT_FOUND);
-        }
-        appointment.get().setStatus(1);
-        appointment.get().setUpdatedAt(DateTimeConfig.getCurrentDateTime("dd/MM/yyyy - HH:mm:ss"));
-        String patientName = appointment.get().getPatient().getFullName();
-
-        return new CustomeResponseEntity<>(new CommonMessageDTO<>(StatusCode.SuccessCode,
-                "appointment accepted for patient " + patientName
-        ), HttpStatus.OK);
-    }
-
-    @Transactional
-    public CustomeResponseEntity<?> rejectAppointment(long appointmentID) {
-        Optional<Appointment> appointment = appointmentRepository.findById(appointmentID);
-        //.orElseThrow(() -> new IllegalStateException("Appoint with id " + appointmentID + " does not exist!"));
-        if (!appointment.isPresent()) {
-            return new CustomeResponseEntity<>(new CommonMessageDTO<>(StatusCode.NotFoundCode,
-                    "Appoint with id " + appointmentID + " does not exist!"
-            ), HttpStatus.NOT_FOUND);
-        }
-        appointment.get().setStatus(2);
-        appointment.get().setUpdatedAt(DateTimeConfig.getCurrentDateTime("dd/MM/yyyy - HH:mm:ss"));
-        String patientName = appointment.get().getPatient().getFullName();
-        return new CustomeResponseEntity<>(new CommonMessageDTO<>(StatusCode.SuccessCode,
-                "appointment rejected for patient " + patientName
-        ), HttpStatus.OK);
-    }
+//    @Transactional
+//    public CustomeResponseEntity<?> acceptAppointment(long appointmentID, long doctorId) {
+//        Optional<Appointment> appointment = appointmentRepository.findById(appointmentID);
+//        if (!appointment.isPresent()) {
+//            return new CustomeResponseEntity<>(new CommonMessageDTO<>(StatusCode.NotFoundCode,
+//                    "Appoint with id " + appointmentID + " does not exist!"
+//            ), HttpStatus.NOT_FOUND);
+//        }
+//        appointment.get().setStatus(1);
+//        appointment.get().setUpdatedAt(DateTimeConfig.getCurrentDateTime("dd/MM/yyyy - HH:mm:ss"));
+//        String patientName = appointment.get().getPatient().getFullName();
+//
+//        return new CustomeResponseEntity<>(new CommonMessageDTO<>(StatusCode.SuccessCode,
+//                "appointment accepted for patient " + patientName
+//        ), HttpStatus.OK);
+//    }
+//
+//    @Transactional
+//    public CustomeResponseEntity<?> rejectAppointment(long appointmentID) {
+//        Optional<Appointment> appointment = appointmentRepository.findById(appointmentID);
+//        //.orElseThrow(() -> new IllegalStateException("Appoint with id " + appointmentID + " does not exist!"));
+//        if (!appointment.isPresent()) {
+//            return new CustomeResponseEntity<>(new CommonMessageDTO<>(StatusCode.NotFoundCode,
+//                    "Appoint with id " + appointmentID + " does not exist!"
+//            ), HttpStatus.NOT_FOUND);
+//        }
+//        appointment.get().setStatus(2);
+//        appointment.get().setUpdatedAt(DateTimeConfig.getCurrentDateTime("dd/MM/yyyy - HH:mm:ss"));
+//        String patientName = appointment.get().getPatient().getFullName();
+//        return new CustomeResponseEntity<>(new CommonMessageDTO<>(StatusCode.SuccessCode,
+//                "appointment rejected for patient " + patientName
+//        ), HttpStatus.OK);
+//    }
 
 }
 

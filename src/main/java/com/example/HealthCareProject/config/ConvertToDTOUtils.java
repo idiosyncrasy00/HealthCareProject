@@ -1,11 +1,9 @@
 package com.example.HealthCareProject.config;
 
 import com.example.HealthCareProject.dto.*;
-import com.example.HealthCareProject.entity.Appointment;
-import com.example.HealthCareProject.entity.Doctor;
-import com.example.HealthCareProject.entity.Patient;
-import com.example.HealthCareProject.entity.UserData;
+import com.example.HealthCareProject.entity.*;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public class ConvertToDTOUtils {
     public static UserDataDTO convertToUserDataDTO(UserData userData) {
@@ -41,18 +39,31 @@ public class ConvertToDTOUtils {
                 .build();
     }
 
-    public static AppointmentDTO convertToAppointDetailsDTO(Appointment appointment, Page<Appointment> appointmentPage) {
+    public static AppointmentDTO convertToAppointDetailsDTO(Appointment appointment) {
         return AppointmentDTO.builder()
                 .id(appointment.getId())
                 .patientInfo(ConvertToDTOUtils.convertToPatientDTO(appointment.getPatient()))
-                .appointmentTime(appointment.getAppointmentTime())
+                .appointmentSlotId(appointment.getAppointmentSlot().getId())
                 .message(appointment.getMessage())
-                .status(appointment.getStatus())
-                .pagingDTO(PagingDTO.builder()
-                        .totalPages(appointmentPage.getTotalPages())
-                        .currentPage(appointmentPage.getNumber())
-                        .totalRecords(appointmentPage.getTotalElements())
-                        .build())
+                //.status(appointment.getStatus())
+                .build();
+    }
+
+    public static AppointmentSlotDTO.AppointmentSlotDetails convertToAppointmentSlotDetailsDTO(AppointmentSlot appointmentSlot) {
+        return AppointmentSlotDTO.AppointmentSlotDetails.builder()
+                .id(appointmentSlot.getId())
+                .appointment_date(appointmentSlot.getAppointment_date())
+                .appointment_time(appointmentSlot.getAppointment_time())
+                .doctorId(appointmentSlot.getDoctor().getId())
+                .doctorName(appointmentSlot.getDoctor().getFullName())
+                .build();
+    }
+
+    public static PagingDTO convertToPagingDTO(Page<?> paging) {
+        return PagingDTO.builder()
+                .currentPage(paging.getNumber())
+                .totalPages(paging.getTotalPages())
+                .totalRecords(paging.getTotalElements())
                 .build();
     }
 
@@ -60,14 +71,14 @@ public class ConvertToDTOUtils {
         return AppointmentDTO.builder()
                 .id(appointment.getId())
                 .doctorDTO(ConvertToDTOUtils.convertToDoctorDTO(appointment.getDoctor()))
-                .appointmentTime(appointment.getAppointmentTime())
+                .appointmentSlotId(appointment.getAppointmentSlot().getId())
                 .message(appointment.getMessage())
-                .status(appointment.getStatus())
-                .pagingDTO(PagingDTO.builder()
-                        .totalPages(appointmentPage.getTotalPages())
-                        .currentPage(appointmentPage.getNumber())
-                        .totalRecords(appointmentPage.getTotalElements())
-                        .build())
+                //.status(appointment.getStatus())
+//                .pagingDTO(PagingDTO.builder()
+//                        .totalPages(appointmentPage.getTotalPages())
+//                        .currentPage(appointmentPage.getNumber())
+//                        .totalRecords(appointmentPage.getTotalElements())
+//                        .build())
                 .build();
     }
 }

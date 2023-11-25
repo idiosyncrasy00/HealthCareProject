@@ -16,18 +16,17 @@ public class AppointmentDTO extends Common {
     private Long id;
     private PatientDTO patientInfo;
     private DoctorDTO doctorDTO;
-    private Date appointmentTime;
+    private long appointmentSlotId;
     private String message;
-    private int status;
-    private PagingDTO pagingDTO;
+    //private int status;
 
     @Builder
     public static class makeAppointmentResponse {
         private long id;
         private long doctorId;
         private long patientId;
-        private Date appointmentTime;
-        private int status;
+        private long appointmentSlotId;
+        //private int status;
         private String message;
     }
 
@@ -35,9 +34,9 @@ public class AppointmentDTO extends Common {
     @Getter
     public static class AppointmentDetailsFromDoctor extends Common {
         private PatientDTO patientInfo;
-        private Date appointmentTime;
+        private long appointmentSlotId;
         private String message;
-        private int status;
+        //private int status;
     }
 
     @Builder
@@ -47,9 +46,9 @@ public class AppointmentDTO extends Common {
     @NoArgsConstructor
     public static class AppointmentDetailsFromPatient extends Common {
         private DoctorDTO doctorDTO;
-        private Date appointmentTime;
+        private long appointmentSlotId;
         private String message;
-        private int status;
+        //private int status;
     }
 
     @Builder

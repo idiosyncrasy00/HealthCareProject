@@ -44,29 +44,29 @@ public class AppointmentController {
         return appointmentService.makeAppointment(appointment, id);
     }
 
-    @PostMapping("/accept")
-    @PreAuthorize("hasRole('DOCTOR') and #id == authentication.principal.id")
-    public CustomeResponseEntity<?> acceptAppointment(@RequestParam long appointmentId,
-                                               @RequestParam long doctorId,
-                                               @RequestParam long id
-    ) {
-        if (doctorService.checkUserIdIsDoctorId(doctorId, id) <= 0) {
-            return new CustomeResponseEntity<>(new CommonMessageDTO<>(StatusCode.BadRequestCode,
-                            "You cannot do this operation!"), HttpStatus.BAD_REQUEST);
-        }
-        return appointmentService.acceptAppointment(appointmentId, doctorId);
-    }
-
-    @PostMapping("/reject")
-    @PreAuthorize("hasRole('DOCTOR') and #id == authentication.principal.id")
-    public CustomeResponseEntity<?> rejectAppointment(@RequestParam long appointmentId, @RequestParam long doctorId,
-                                               @RequestParam long id) {
-        if (doctorService.checkUserIdIsDoctorId(doctorId, id) <= 0) {
-            return new CustomeResponseEntity(new CommonMessageDTO<>(StatusCode.BadRequestCode,
-                            "You cannot do this operation!"), HttpStatus.BAD_REQUEST);
-        }
-        return appointmentService.rejectAppointment(appointmentId);
-    }
+//    @PostMapping("/accept")
+//    @PreAuthorize("hasRole('DOCTOR') and #id == authentication.principal.id")
+//    public CustomeResponseEntity<?> acceptAppointment(@RequestParam long appointmentId,
+//                                               @RequestParam long doctorId,
+//                                               @RequestParam long id
+//    ) {
+//        if (doctorService.checkUserIdIsDoctorId(doctorId, id) <= 0) {
+//            return new CustomeResponseEntity<>(new CommonMessageDTO<>(StatusCode.BadRequestCode,
+//                            "You cannot do this operation!"), HttpStatus.BAD_REQUEST);
+//        }
+//        return appointmentService.acceptAppointment(appointmentId, doctorId);
+//    }
+//
+//    @PostMapping("/reject")
+//    @PreAuthorize("hasRole('DOCTOR') and #id == authentication.principal.id")
+//    public CustomeResponseEntity<?> rejectAppointment(@RequestParam long appointmentId, @RequestParam long doctorId,
+//                                               @RequestParam long id) {
+//        if (doctorService.checkUserIdIsDoctorId(doctorId, id) <= 0) {
+//            return new CustomeResponseEntity(new CommonMessageDTO<>(StatusCode.BadRequestCode,
+//                            "You cannot do this operation!"), HttpStatus.BAD_REQUEST);
+//        }
+//        return appointmentService.rejectAppointment(appointmentId);
+//    }
 
     @PostMapping("/delete")
     @PreAuthorize("hasRole('PATIENT') and #id == authentication.principal.id")

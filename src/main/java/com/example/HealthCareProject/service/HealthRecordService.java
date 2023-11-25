@@ -20,11 +20,14 @@ public class HealthRecordService {
     private final HealthRecordRepository healthRecordRepository;
     private final PatientRepository patientRepository;
     private final AppointmentRepository appointmentRepository;
+    private final RequestViewHealthRecordRepository requestViewHealthRecordRepository;
 
-    public HealthRecordService(HealthRecordRepository healthRecordRepository, PatientRepository patientRepository, AppointmentRepository appointmentRepository) {
+    public HealthRecordService(HealthRecordRepository healthRecordRepository, PatientRepository patientRepository,
+                               AppointmentRepository appointmentRepository, RequestViewHealthRecordRepository requestViewHealthRecordRepository) {
         this.healthRecordRepository = healthRecordRepository;
         this.patientRepository = patientRepository;
         this.appointmentRepository = appointmentRepository;
+        this.requestViewHealthRecordRepository = requestViewHealthRecordRepository;
     }
 
     public int checkHealthRecordIdIsPatientId(long healthRecordId, long patientId) {
@@ -51,8 +54,8 @@ public class HealthRecordService {
     }
 
     public CustomeResponseEntity<?> viewHealthRecordByDoctor(Long doctorId, Long patientId) {
-        int checkAcceptedAppointment = appointmentRepository.countByStatusEqualsAndDoctorIdAndPatientId(1,doctorId, patientId);
-        if (checkAcceptedAppointment <= 0) {
+        int check = requestViewHealthRecordRepository.countByDoctorIdAndPatientIdAndStatus(doctorId, patientId, 1);
+        if (check <= 0) {
             return new CustomeResponseEntity<>(new CommonMessageDTO(StatusCode.NotFoundCode,
                     "Doctor cannot view this patient's health record!"), HttpStatus.NOT_FOUND);
         }

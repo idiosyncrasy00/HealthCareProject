@@ -26,7 +26,7 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long>,
 //    int getAcceptedAppointment(Long doctorId, Long patientId);
 
     //int findAppointmentByStatusEqualsAndDoctorAndPatient_Id(int status,Long doctorId, Long patientId);
-    int countByStatusEqualsAndDoctorIdAndPatientId(int status,long doctorId, long patientId);
+    //int countByStatusEqualsAndDoctorIdAndPatientId(int status,long doctorId, long patientId);
 
     Page<Appointment> findAllByPatientId(long patientId, Pageable pageable);
     //List<Appointment> findAllByPatientId(long patientId);
@@ -39,11 +39,11 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long>,
 
 
     @Query("SELECT a from Appointment a inner join Patient p " +
-            "on a.patient.id = p.id and a.doctor.id = ?2 where a.status in ?3 and p.fullName like %?1%")
+            "on a.patient.id = p.id and a.doctor.id = ?2 where p.fullName like %?1%")
     Page<Appointment> findAppointmentsFromDoctor(String patientFullName,
                                                  long doctorId, Collection<Integer> status, Pageable pageable);
     @Query("SELECT a from Appointment a inner join Doctor d " +
-            "on a.doctor.id = d.id and a.patient.id = ?2 where a.status in ?3 and d.fullName like %?1%")
+            "on a.doctor.id = d.id and a.patient.id = ?2 where d.fullName like %?1%")
     Page<Appointment> findAppointmentsFromPatient(String doctorFullName, long patientId, Collection<Integer> status, Pageable pageable);
 
 }

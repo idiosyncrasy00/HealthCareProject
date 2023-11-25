@@ -34,28 +34,29 @@ public class Appointment extends Common {
     @JoinColumn(name = "patient_id")
     private Patient patient;
 
-    @JoinColumn(name = "appointmentTime")
-    @DateTimeFormat(pattern = "dd/MM/yyyy hh:mm:ss")
-    private Date appointmentTime;
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @OnDelete(action = OnDeleteAction.CASCADE) //todo
+    @JoinColumn(name = "appointment_slot_id", unique = true)
+    private AppointmentSlot appointmentSlot;
 
 //    @CreationTimestamp
 //    @Temporal(TemporalType.TIMESTAMP)
 //    @DateTimeFormat(pattern = "dd/MM/yyyy")
 //    private Date timeCreated;
 
-    @Column(name="status")
+    //@Column(name="status")
     /**
      * 0: pending
      * 1: accepted
      * 2: rejected
      */
-    private int status = 0;
+    //private int status = 0;
     @Column(name="message")
     private String message;
 
-    public Appointment(Patient patient, Doctor doctor, int status) {
+    public Appointment(Patient patient, Doctor doctor) {
         this.patient = patient;
         this.doctor = doctor;
-        this.status = status;
+        //this.status = status;
     }
 }

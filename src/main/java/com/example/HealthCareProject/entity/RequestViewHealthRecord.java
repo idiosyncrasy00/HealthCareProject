@@ -2,15 +2,9 @@ package com.example.HealthCareProject.entity;
 
 import com.example.HealthCareProject.entity.common.Common;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
-
-import java.io.Serializable;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.Date;
 
 @Builder
 @Getter
@@ -19,21 +13,26 @@ import java.util.Date;
 @NoArgsConstructor
 @ToString
 @Entity
-@Table(name = "AppointmentSlot"
+@Table(name = "RequestViewHealthRecord"
 )
-public class AppointmentSlot extends Common implements Serializable {
-
-//    @Temporal(TemporalType.TIMESTAMP)
-//    @NotBlank
-    private LocalDate appointment_date; // Using timestamp
-
-//    @Column(columnDefinition = "TIME")
-//    @NotBlank
-    private LocalTime appointment_time;
-
+public class RequestViewHealthRecord extends Common {
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "doctor_id")
     private Doctor doctor;
+
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "patient_id")
+    private Patient patient;
+
+    /**
+     * 0: pending
+     * 1: accepted
+     * 2: rejected
+     */
+    private int status = 0;
+
+
 
 }
