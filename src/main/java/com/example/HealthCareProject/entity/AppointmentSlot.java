@@ -31,9 +31,23 @@ public class AppointmentSlot extends Common implements Serializable {
 //    @NotBlank
     private LocalTime appointment_time;
 
+    @Column(name="status")
+    /**
+     * 0: not yet to the clinic
+     * 1: in the progress
+     * 2: the healthcheck is over. Doctor can prescribe to the patient
+     */
+    private int status = 0;
+
+    @OneToOne(mappedBy = "appointmentSlot", cascade = CascadeType.ALL, orphanRemoval = true)
+    //@OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "prescription_id")
+    private Prescription prescription;
+
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "doctor_id")
     private Doctor doctor;
+
 
 }

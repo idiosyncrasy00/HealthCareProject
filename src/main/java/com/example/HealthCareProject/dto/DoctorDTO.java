@@ -97,6 +97,19 @@ public class DoctorDTO implements Serializable {
         private String doctorType;
         private String gender;
         private String description;
-        private UserDataDTO userDataDTO;
+        //private UserDataDTO userDataDTO;
+    }
+
+    @Builder
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class doctorDetails {
+        private long doctorId;
+        private String doctorName;
+        private String address;
+        private String doctorType;
+        private String gender;
     }
 }

@@ -33,6 +33,4 @@ public class RequestViewHealthRecord extends Common {
      */
     private int status = 0;
 
-
-
 }

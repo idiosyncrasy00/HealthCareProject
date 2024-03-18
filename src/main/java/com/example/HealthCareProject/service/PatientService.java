@@ -40,7 +40,6 @@ public class PatientService {
     private final PatientRepository patientRepository;
     private final UserDataRepository userDataRepository;
     private final AppointmentRepository appointmentRepository;
-    private HttpServletResponse res = new Response();
 
     public PatientService(PatientRepository patientRepository, UserDataRepository userDataRepository, AppointmentRepository appointmentRepository) {
         this.patientRepository = patientRepository;
@@ -79,7 +78,6 @@ public class PatientService {
 //                        .result(appointmentList)
 //                        .build(), HttpStatus.OK
 //        ));
-        Utils.doLongRunningTask();
         return new CustomeResponseEntity<>(
                 CommonMessageDTO.builder()
                         .statusCode(StatusCode.SuccessCode)

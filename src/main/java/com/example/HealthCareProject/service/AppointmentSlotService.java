@@ -91,6 +91,8 @@ public class AppointmentSlotService {
         List<AppointmentSlotDTO.AppointmentSlotDetails> appointmentSlotList = results.getContent().stream()
                 .map(result -> ConvertToDTOUtils.convertToAppointmentSlotDetailsDTO(result)).collect(Collectors.toList());
         return new CustomeResponseEntity<>(new CommonMessageDTO<>(StatusCode.SuccessCode, "success",
-                appointmentSlotList, ConvertToDTOUtils.convertToPagingDTO(results)), HttpStatus.OK);
+                appointmentSlotList
+                //results
+                , ConvertToDTOUtils.convertToPagingDTO(results)), HttpStatus.OK);
     }
 }

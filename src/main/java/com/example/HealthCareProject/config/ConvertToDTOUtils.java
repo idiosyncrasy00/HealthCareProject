@@ -2,10 +2,21 @@ package com.example.HealthCareProject.config;
 
 import com.example.HealthCareProject.dto.*;
 import com.example.HealthCareProject.entity.*;
+import com.example.HealthCareProject.repository.AppointmentSlotRepository;
+import com.example.HealthCareProject.repository.PrescriptionRepository;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.Optional;
 
 public class ConvertToDTOUtils {
+    //private static final PrescriptionRepository prescriptionRepository = null;
+
+//    public ConvertToDTOUtils(PrescriptionRepository prescriptionRepository) {
+//        this.prescriptionRepository = prescriptionRepository;
+//    }
+
     public static UserDataDTO convertToUserDataDTO(UserData userData) {
         return UserDataDTO.builder()
                 .id(userData.getId())
@@ -50,12 +61,37 @@ public class ConvertToDTOUtils {
     }
 
     public static AppointmentSlotDTO.AppointmentSlotDetails convertToAppointmentSlotDetailsDTO(AppointmentSlot appointmentSlot) {
-        return AppointmentSlotDTO.AppointmentSlotDetails.builder()
-                .id(appointmentSlot.getId())
-                .appointment_date(appointmentSlot.getAppointment_date())
-                .appointment_time(appointmentSlot.getAppointment_time())
+        //doctor details
+//        DoctorDTO.doctorDetails doctorDetails =  DoctorDTO.doctorDetails.builder()
+//                .doctorId((Long) appointmentSlot[3])
+//                .doctorName((String) appointmentSlot[4])
+//                .address((String) appointmentSlot[5])
+//                .gender((String) appointmentSlot[6])
+//                .build();
+
+        DoctorDTO.doctorDetails doctorDetails =  DoctorDTO.doctorDetails.builder()
                 .doctorId(appointmentSlot.getDoctor().getId())
                 .doctorName(appointmentSlot.getDoctor().getFullName())
+                .address(appointmentSlot.getDoctor().getAddress())
+                .gender(appointmentSlot.getDoctor().getGender())
+                .doctorType(appointmentSlot.getDoctor().getDoctorType())
+                .build();
+        //add prescription
+        PrescriptionDTO.PrescriptionDetails prescriptionDetails = null;
+        if (appointmentSlot.getPrescription() != null) {
+            prescriptionDetails = PrescriptionDTO.PrescriptionDetails.builder()
+                    .diagnosis(appointmentSlot.getPrescription().getDiagnosis())
+                    .prescriptionDescription(appointmentSlot.getPrescription().getPrescriptionDescription())
+                    .medicine(appointmentSlot.getPrescription().getMedicine())
+                    .build();
+        }
+
+        return AppointmentSlotDTO.AppointmentSlotDetails.builder()
+               .id(appointmentSlot.getId())
+                .appointment_date( appointmentSlot.getAppointment_date())
+                .appointment_time(appointmentSlot.getAppointment_time())
+                .doctorDetails(doctorDetails)
+                .prescriptionDetails(prescriptionDetails)
                 .build();
     }
 

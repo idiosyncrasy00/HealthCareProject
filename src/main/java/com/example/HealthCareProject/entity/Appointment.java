@@ -4,6 +4,7 @@ import com.example.HealthCareProject.entity.common.Common;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.OnDelete;
@@ -34,23 +35,19 @@ public class Appointment extends Common {
     @JoinColumn(name = "patient_id")
     private Patient patient;
 
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @OneToOne(fetch = FetchType.EAGER, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE) //todo
     @JoinColumn(name = "appointment_slot_id", unique = true)
+    @NotBlank
     private AppointmentSlot appointmentSlot;
 
-//    @CreationTimestamp
-//    @Temporal(TemporalType.TIMESTAMP)
-//    @DateTimeFormat(pattern = "dd/MM/yyyy")
-//    private Date timeCreated;
-
-    //@Column(name="status")
-    /**
-     * 0: pending
-     * 1: accepted
-     * 2: rejected
-     */
-    //private int status = 0;
+//    @Column(name="status")
+//    /**
+//     * 0: not yet to the clinic
+//     * 1: in the progress
+//     * 2: the healthcheck is over. Doctor can prescribe to the patient
+//     */
+//    private int status = 0;
     @Column(name="message")
     private String message;
 

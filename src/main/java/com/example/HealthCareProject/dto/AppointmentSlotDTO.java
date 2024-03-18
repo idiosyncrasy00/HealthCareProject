@@ -1,7 +1,9 @@
 package com.example.HealthCareProject.dto;
 
 import com.example.HealthCareProject.entity.Doctor;
+import com.example.HealthCareProject.entity.Prescription;
 import com.example.HealthCareProject.entity.common.Common;
+import jakarta.persistence.Column;
 import lombok.*;
 
 import java.io.Serializable;
@@ -17,6 +19,7 @@ public class AppointmentSlotDTO extends Common implements Serializable {
     private LocalDate appointment_date;
     private LocalTime appointment_time;
     private Doctor doctor;
+    private Prescription prescription;
 
     @Builder
     @Getter
@@ -25,8 +28,8 @@ public class AppointmentSlotDTO extends Common implements Serializable {
         private long id;
         private LocalDate appointment_date;
         private LocalTime appointment_time;
-        private long doctorId;
-        private String doctorName;
+        private DoctorDTO.doctorDetails doctorDetails;
+        private PrescriptionDTO.PrescriptionDetails prescriptionDetails;
     }
 
     @Builder
