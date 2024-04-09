@@ -45,16 +45,4 @@ public class Common implements Serializable {
     @Getter(AccessLevel.PUBLIC)
     @Setter(AccessLevel.PUBLIC)
     protected String updatedAt = DateTimeConfig.getCurrentDateTime("dd/MM/yyyy - HH:mm:ss");
-
-//    @CreatedDate
-////    @Temporal(TemporalType.TIMESTAMP)
-//    @Column(name = "createdAt", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP", updatable = false)
-//    @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm:ss")
-//    protected LocalDateTime createdAt;
-//
-//    @LastModifiedDate
-////    @Temporal(TemporalType.TIMESTAMP)
-//    @Column(name = "updatedAt", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-//    @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm:ss")
-//    protected LocalDateTime updatedAt;
 }

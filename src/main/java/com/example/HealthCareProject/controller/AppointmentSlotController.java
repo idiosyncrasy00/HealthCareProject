@@ -10,6 +10,7 @@ import com.example.HealthCareProject.service.AppointmentService;
 import com.example.HealthCareProject.service.AppointmentSlotService;
 import com.example.HealthCareProject.service.DoctorService;
 import com.example.HealthCareProject.service.PatientService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;

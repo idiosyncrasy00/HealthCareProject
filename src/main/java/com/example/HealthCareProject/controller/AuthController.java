@@ -14,6 +14,7 @@ import com.example.HealthCareProject.consts.ERole;
 
 import com.example.HealthCareProject.entity.UserData;
 import com.example.HealthCareProject.repository.UserDataRepository;
+
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.apache.catalina.connector.Response;
@@ -54,7 +55,6 @@ public class AuthController {
     @Autowired
     JwtUtils jwtUtils;
     private HttpServletResponse res = new Response();
-
 
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody UserDataDTO.LoginRequest loginRequest) {

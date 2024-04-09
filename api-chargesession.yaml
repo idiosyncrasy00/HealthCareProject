@@ -1,0 +1,11 @@
+apiVersion: backstage.io/v1alpha1
+kind: API
+metadata:
+  name: Lockedaway-chargesession
+  description: Lockedaway's Charging Session Sample REST API
+spec:
+  type: openapi
+  lifecycle: production
+  owner: user:guest
+  definition:
+    $text: http://localhost:8081/lockedaway-api-docs

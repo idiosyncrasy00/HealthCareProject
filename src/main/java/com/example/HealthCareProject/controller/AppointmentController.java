@@ -8,6 +8,8 @@ import com.example.HealthCareProject.entity.common.CustomeResponseEntity;
 import com.example.HealthCareProject.service.AppointmentService;
 import com.example.HealthCareProject.service.DoctorService;
 import com.example.HealthCareProject.service.PatientService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,7 @@ import java.io.IOException;
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping(path = "api/appointment")
+@Tag(name = "Appointment", description = "Appointment management APIs")
 public class AppointmentController {
     private AppointmentService appointmentService;
     private DoctorService doctorService;
@@ -36,11 +39,13 @@ public class AppointmentController {
         this.appointmentService = appointmentService;
     }
 
+    @Operation(summary = "Make an appointment")
     @PostMapping("/make")
     @PreAuthorize("hasRole('PATIENT') and #id == authentication.principal.id")
     public CustomeResponseEntity<?> makeAppointment(@RequestBody Appointment appointment,
                                                     @RequestParam long id
-    ) {
+    )
+    {
         return appointmentService.makeAppointment(appointment, id);
     }
 
