@@ -1,17 +1,14 @@
 package com.example.HealthCareProject.repository;
 
-import com.example.HealthCareProject.dto.AppointmentDTO;
 import com.example.HealthCareProject.entity.Appointment;
+import jakarta.persistence.LockModeType;
+import jakarta.persistence.QueryHint;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
-import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.*;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 
 public interface AppointmentRepository extends JpaRepository<Appointment, Long>, PagingAndSortingRepository<Appointment, Long> {
@@ -27,6 +24,10 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long>,
 
     //int findAppointmentByStatusEqualsAndDoctorAndPatient_Id(int status,Long doctorId, Long patientId);
     //int countByStatusEqualsAndDoctorIdAndPatientId(int status,long doctorId, long patientId);
+
+//    @Lock(LockModeType.PESSIMISTIC_FORCE_INCREMENT)
+//    @QueryHints({@QueryHint(name = "javax.persistence.lock.timeout", value = "5000")})
+    Optional<Appointment> findById(Long id);
 
     Page<Appointment> findAllByPatientId(long patientId, Pageable pageable);
     //List<Appointment> findAllByPatientId(long patientId);

@@ -32,8 +32,12 @@ public class Patient extends Common {
 
     @JsonIgnore
     @OneToOne(cascade = CascadeType.MERGE)
+    //@OneToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "user_id")
     private UserData userData;
+
+//    @Version
+//    private Long version;
 
 }

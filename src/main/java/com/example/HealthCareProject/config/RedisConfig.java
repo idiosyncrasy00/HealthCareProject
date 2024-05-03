@@ -1,6 +1,7 @@
 package com.example.HealthCareProject.config;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
@@ -12,6 +13,7 @@ import org.springframework.data.redis.serializer.RedisSerializationContext;
 
 import java.time.Duration;
 
+@Configuration
 public class RedisConfig {
 //    @Bean
 //    JedisConnectionFactory jedisConnectionFactory() {
@@ -41,7 +43,7 @@ public class RedisConfig {
                 .withCacheConfiguration("patient", myDefaultCacheConfig(Duration.ofMinutes(1)))
                 .withCacheConfiguration("appointments_patient", myDefaultCacheConfig(Duration.ofMinutes(1)))
                 .withCacheConfiguration("appointments_doctor", myDefaultCacheConfig(Duration.ofMinutes(1)))
-                .withCacheConfiguration("edit_patient", myDefaultCacheConfig(Duration.ofMinutes(1)))
+                //.withCacheConfiguration("edit_patient", myDefaultCacheConfig(Duration.ofMinutes(1)))
                 .build();
     }
 

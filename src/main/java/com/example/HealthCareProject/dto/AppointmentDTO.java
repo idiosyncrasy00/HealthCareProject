@@ -21,6 +21,17 @@ public class AppointmentDTO extends Common {
     //private int status;
 
     @Builder
+    @Getter
+    @Setter
+    public static class makeAppointmentRequest {
+        //private Long id;
+        private long patientID;
+        private long doctorID;
+        private long appointmentSlotId;
+        private String message;
+    }
+
+    @Builder
     public static class makeAppointmentResponse {
         private long id;
         private long doctorId;

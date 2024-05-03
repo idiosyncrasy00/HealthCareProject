@@ -78,7 +78,7 @@ public class UserDataService {
             return ResponseEntity.badRequest().body(new CommonMessageDTO<>(StatusCode.BadRequestCode,"Username is already taken!"));
         }
         userDataRepository.save(user);
-        UserDataDTO userDataDTO = mapper.modelMapper().map(user, UserDataDTO.class);
+        //UserDataDTO userDataDTO = mapper.modelMapper().map(user, UserDataDTO.class);
 //        return ResponseEntity.ok(new CommonMessageDTO<>(StatusCode.SuccessCode,
 //                "User registered successfully!", userDataDTO));
         return ResponseEntity.ok(new CommonMessageDTO<>(StatusCode.SuccessCode,
@@ -126,15 +126,4 @@ public class UserDataService {
                     "Some fields are missing."));
         }
     }
-
-//    public BCryptPasswordEncoder bCryptPasswordEncoder() {
-//        return new BCryptPasswordEncoder();
-//    }
-//
-//    @Transactional
-//    public long saveUserData(UserData userData) {
-//        userData.setPassword(bCryptPasswordEncoder()
-//                .encode(userData.getPassword()));
-//        return userData.getId();
-//    }
 }

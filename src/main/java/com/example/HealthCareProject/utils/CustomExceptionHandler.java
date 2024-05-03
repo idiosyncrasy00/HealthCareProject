@@ -1,4 +1,4 @@
-package com.example.HealthCareProject.config;
+package com.example.HealthCareProject.utils;
 
 import com.example.HealthCareProject.dto.CommonMessageDTO;
 import jakarta.servlet.http.HttpServletResponse;

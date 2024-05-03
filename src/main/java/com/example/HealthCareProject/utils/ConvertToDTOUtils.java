@@ -1,14 +1,8 @@
-package com.example.HealthCareProject.config;
+package com.example.HealthCareProject.utils;
 
 import com.example.HealthCareProject.dto.*;
 import com.example.HealthCareProject.entity.*;
-import com.example.HealthCareProject.repository.AppointmentSlotRepository;
-import com.example.HealthCareProject.repository.PrescriptionRepository;
 import org.springframework.data.domain.Page;
-
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.Optional;
 
 public class ConvertToDTOUtils {
     //private static final PrescriptionRepository prescriptionRepository = null;

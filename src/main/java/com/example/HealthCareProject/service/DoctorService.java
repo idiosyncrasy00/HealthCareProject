@@ -1,38 +1,29 @@
 package com.example.HealthCareProject.service;
 
-import com.example.HealthCareProject.config.ConvertToDTOUtils;
+import com.example.HealthCareProject.utils.ConvertToDTOUtils;
 import com.example.HealthCareProject.config.DateTimeConfig;
 import com.example.HealthCareProject.consts.StatusCode;
 import com.example.HealthCareProject.dto.AppointmentDTO;
 import com.example.HealthCareProject.dto.CommonMessageDTO;
 import com.example.HealthCareProject.dto.DoctorDTO;
-import com.example.HealthCareProject.dto.PagingDTO;
 import com.example.HealthCareProject.entity.Appointment;
-import com.example.HealthCareProject.entity.Patient;
 import com.example.HealthCareProject.entity.common.CustomeResponseEntity;
 import com.example.HealthCareProject.repository.AppointmentRepository;
 import com.example.HealthCareProject.repository.DoctorRepository;
 import com.example.HealthCareProject.entity.Doctor;
 import com.example.HealthCareProject.entity.UserData;
 import com.example.HealthCareProject.repository.UserDataRepository;
-import jakarta.persistence.Converter;
 import jakarta.transaction.Transactional;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import static java.util.stream.Collectors.toList;
 
 @Service
 @EnableCaching
@@ -52,7 +43,7 @@ public class DoctorService {
     }
 
     @Cacheable("appointments_doctor")
-    public CustomeResponseEntity<?> getAppointments(String patientFullName, long doctorId,
+    public List<AppointmentDTO> getAppointments(String patientFullName, long doctorId,
                                              Collection<Integer> status, int page, int size) {
         Pageable paging = PageRequest.of(page, size);
         Page<Appointment> results;
@@ -61,22 +52,23 @@ public class DoctorService {
         } else {
             results = appointmentRepository.findAppointmentsFromDoctor(patientFullName, doctorId, status, paging);
         }
-        if (results.getContent().isEmpty()) {
-            return new CustomeResponseEntity<>(new CommonMessageDTO<>(StatusCode.NotFoundCode,
-                    "There are no available appointments!"), HttpStatus.NOT_FOUND);
-        }
+//        if (results.getContent().isEmpty()) {
+//            return new CustomeResponseEntity<>(new CommonMessageDTO<>(StatusCode.NotFoundCode,
+//                    "There are no available appointments!"), HttpStatus.NOT_FOUND);
+//        }
         List<AppointmentDTO> appointmentList = results.getContent().stream().map(result -> ConvertToDTOUtils.convertToAppointDetailsDTO(result)).collect(Collectors.toList());
-        return new CustomeResponseEntity<>(new CommonMessageDTO<>(StatusCode.SuccessCode, "sucess",
-                appointmentList, ConvertToDTOUtils.convertToPagingDTO(results)), HttpStatus.OK);
+//        return new CustomeResponseEntity<>(new CommonMessageDTO<>(StatusCode.SuccessCode, "sucess",
+//                appointmentList, ConvertToDTOUtils.convertToPagingDTO(results)), HttpStatus.OK);
+        return appointmentList;
     }
 
     @Cacheable("doctor")
-    public CustomeResponseEntity<?> viewDoctorDetails(long doctorId) {
+    public DoctorDTO.ViewDoctorResponse viewDoctorDetails(long doctorId) {
         Optional<Doctor> doctor = doctorRepository.findByDoctorID(doctorId);
-        if (!doctor.isPresent()) {
-            return new CustomeResponseEntity(new CommonMessageDTO<>(StatusCode.NotFoundCode,
-                    "doctor with id " + doctorId + " does not exist!"), HttpStatus.NOT_FOUND);
-        }
+//        if (!doctor.isPresent()) {
+//            return new CustomeResponseEntity(new CommonMessageDTO<>(StatusCode.NotFoundCode,
+//                    "doctor with id " + doctorId + " does not exist!"), HttpStatus.NOT_FOUND);
+//        }
         DoctorDTO.ViewDoctorResponse response = DoctorDTO.ViewDoctorResponse.builder()
                 .fullName(doctor.get().getFullName())
                 .address(doctor.get().getAddress())
@@ -86,18 +78,19 @@ public class DoctorService {
                 .email(doctor.get().getUserData().getEmail())
                 .phoneNumber(doctor.get().getUserData().getPhoneNumber())
                 .build();
-        return new CustomeResponseEntity<>(new CommonMessageDTO<>(StatusCode.SuccessCode,
-                response), HttpStatus.OK);
+        return response;
+//        return new CustomeResponseEntity<>(new CommonMessageDTO<>(StatusCode.SuccessCode,
+//                response), HttpStatus.OK);
     }
     @Transactional
-    public CustomeResponseEntity<?> addNewDoctor(DoctorDTO.AddDoctor addedDoctor, long userId) {
+    public DoctorDTO.AddDoctorResponse addNewDoctor(DoctorDTO.AddDoctor addedDoctor, long userId) {
             //find user
             //find user id?
             Optional<UserData> userData = userDataRepository.findById(userId);
-        if (userData.isEmpty()) {
-            return new CustomeResponseEntity<>(new CommonMessageDTO<>(StatusCode.NotFoundCode,
-                    "user with id " + userId + " does not exist!"), HttpStatus.NOT_FOUND);
-        }
+//        if (userData.isEmpty()) {
+//            return new CustomeResponseEntity<>(new CommonMessageDTO<>(StatusCode.NotFoundCode,
+//                    "user with id " + userId + " does not exist!"), HttpStatus.NOT_FOUND);
+//        }
         //build doctor
             Doctor doctor = Doctor.builder()
                     .fullName(addedDoctor.getFullName())
@@ -115,19 +108,13 @@ public class DoctorService {
                     .description(doctor.getDescription())
                     .userDataDTO(ConvertToDTOUtils.convertToUserDataDTO(userData.get()))
                     .build();
-        return new CustomeResponseEntity<>(new CommonMessageDTO<>(StatusCode.SuccessCode,
-                response), HttpStatus.OK);
+        return response;
     }
 
     @Transactional
-    public CustomeResponseEntity<?> editDoctor(DoctorDTO.EditDoctor doctor, long doctorId) {
+    public DoctorDTO.EditDoctorResponse editDoctor(DoctorDTO.EditDoctor doctor, long doctorId) {
         //find user id?
         Optional<Doctor> currentDoctor = doctorRepository.findByDoctorID(doctorId);
-        if (currentDoctor.isPresent()) {
-            return new CustomeResponseEntity(new CommonMessageDTO<>(StatusCode.NotFoundCode,
-                    "doctor with id " + doctorId + " does not exist!"), HttpStatus.NOT_FOUND);
-        }
-                //.orElseThrow(() -> new IllegalStateException("doctor with id " + doctorId + " does not exist!"));
         currentDoctor.get().setFullName(doctor.getFullName());
         currentDoctor.get().setAddress(doctor.getAddress());
         currentDoctor.get().setDoctorType(doctor.getDoctorType());
@@ -143,7 +130,8 @@ public class DoctorService {
                 .gender(currentDoctor.get().getGender())
                 .description(currentDoctor.get().getDescription())
                 .build();
-        return new CustomeResponseEntity<>(new CommonMessageDTO<>(StatusCode.SuccessCode,
-                response), HttpStatus.OK);
+//        return new CustomeResponseEntity<>(new CommonMessageDTO<>(StatusCode.SuccessCode,
+//                response), HttpStatus.OK);
+        return response;
     }
 }

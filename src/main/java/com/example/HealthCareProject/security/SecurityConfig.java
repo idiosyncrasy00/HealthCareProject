@@ -62,7 +62,6 @@ public class SecurityConfig {
                                 .anyRequest().authenticated()
                         //auth.anyRequest().permitAll()
                 )
-
         ;
 
         http.authenticationProvider(authenticationProvider());

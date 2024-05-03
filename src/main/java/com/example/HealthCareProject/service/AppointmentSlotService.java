@@ -1,15 +1,12 @@
 package com.example.HealthCareProject.service;
 
-import com.example.HealthCareProject.config.ConvertToDTOUtils;
+import com.example.HealthCareProject.utils.ConvertToDTOUtils;
 import com.example.HealthCareProject.consts.StatusCode;
-import com.example.HealthCareProject.dto.AppointmentDTO;
 import com.example.HealthCareProject.dto.AppointmentSlotDTO;
 import com.example.HealthCareProject.dto.CommonMessageDTO;
-import com.example.HealthCareProject.entity.Appointment;
 import com.example.HealthCareProject.entity.AppointmentSlot;
 import com.example.HealthCareProject.entity.Doctor;
 import com.example.HealthCareProject.entity.common.CustomeResponseEntity;
-import com.example.HealthCareProject.repository.AppointmentRepository;
 import com.example.HealthCareProject.repository.AppointmentSlotRepository;
 import com.example.HealthCareProject.repository.DoctorRepository;
 import com.example.HealthCareProject.repository.PatientRepository;
@@ -40,14 +37,7 @@ public class AppointmentSlotService {
     }
 
     @Transactional
-    public CustomeResponseEntity<?> makeAppointmentSlot(AppointmentSlotDTO appointmentSlotDTO) {
-        long doctorId = appointmentSlotDTO.getDoctor().getId();
-
-        Optional<Doctor> doctor = doctorRepository.findById(doctorId);
-        if (!doctor.isPresent()) {
-            return new CustomeResponseEntity<>(new CommonMessageDTO<>(StatusCode.NotFoundCode,
-                    "doctor with id " + doctorId + " does not exist!"), HttpStatus.NOT_FOUND);
-        }
+    public AppointmentSlotDTO.AddSlotResponse makeAppointmentSlot(AppointmentSlotDTO appointmentSlotDTO) {
 
         //TODO: check if time is in correct format
 
@@ -67,32 +57,22 @@ public class AppointmentSlotService {
                 .appointment_time(appointmentSlot.getAppointment_time())
                 .doctor_id(appointmentSlot.getDoctor().getId())
                 .build();
-        return new CustomeResponseEntity<>(new CommonMessageDTO<>(StatusCode.SuccessCode, "success",
-                response, null), HttpStatus.OK);
+        return response;
 
     }
 
-    public CustomeResponseEntity<?> getAppointmentSlotsByDoctorId(long doctorId, int page, int size) {
-        Optional<Doctor> doctor = doctorRepository.findById(doctorId);
-        if (!doctor.isPresent()) {
-            return new CustomeResponseEntity<>(new CommonMessageDTO<>(StatusCode.NotFoundCode,
-                    "doctor with id " + doctorId + " does not exist!"), HttpStatus.NOT_FOUND);
-        }
+    public List<AppointmentSlotDTO.AppointmentSlotDetails> getAppointmentSlotsByDoctorId(long doctorId, int page, int size) {
         Pageable paging = PageRequest.of(page, size);
         Page<AppointmentSlot> results;
 
         results = appointmentSlotRepository.findAppointmentSlotsByDoctorId(doctorId, paging);
 
-        if (results.getContent().isEmpty()) {
-            return new CustomeResponseEntity<>(new CommonMessageDTO<>(StatusCode.NotFoundCode,
-                    "There are no available appointments!"), HttpStatus.NOT_FOUND);
-        }
-
         List<AppointmentSlotDTO.AppointmentSlotDetails> appointmentSlotList = results.getContent().stream()
                 .map(result -> ConvertToDTOUtils.convertToAppointmentSlotDetailsDTO(result)).collect(Collectors.toList());
-        return new CustomeResponseEntity<>(new CommonMessageDTO<>(StatusCode.SuccessCode, "success",
-                appointmentSlotList
-                //results
-                , ConvertToDTOUtils.convertToPagingDTO(results)), HttpStatus.OK);
+        return appointmentSlotList;
+        //        return new CustomeResponseEntity<>(new CommonMessageDTO<>(StatusCode.SuccessCode, "success",
+//                appointmentSlotList
+//                //results
+//                , ConvertToDTOUtils.convertToPagingDTO(results)), HttpStatus.OK);
     }
 }

@@ -38,7 +38,7 @@ public class Appointment extends Common {
     @OneToOne(fetch = FetchType.EAGER, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE) //todo
     @JoinColumn(name = "appointment_slot_id", unique = true)
-    @NotBlank
+    //@NotBlank
     private AppointmentSlot appointmentSlot;
 
 //    @Column(name="status")
@@ -50,6 +50,9 @@ public class Appointment extends Common {
 //    private int status = 0;
     @Column(name="message")
     private String message;
+
+    @Version
+    private Long version; // This is the version/timestamp field for optimistic locking
 
     public Appointment(Patient patient, Doctor doctor) {
         this.patient = patient;

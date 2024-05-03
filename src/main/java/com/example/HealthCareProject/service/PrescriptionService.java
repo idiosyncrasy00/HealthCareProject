@@ -32,29 +32,20 @@ public class PrescriptionService {
         this.appointmentSlotRepository = appointmentSlotRepository;
     }
 
-//    public CustomeResponseEntity<?> viewPrescriptionsByDoctorId(long prescriptionId) {
-//
-//        return null;
-//    }
-//
-//    public CustomeResponseEntity<?> viewPrescriptionsByPatientId(long prescriptionId) {
-//        return null;
-//    }
-
     @Transactional
-    public CustomeResponseEntity<?> addNewPrescription(PrescriptionDTO prescriptionDTO) {
+    public Prescription addNewPrescription(PrescriptionDTO prescriptionDTO) {
         long appointmentSlotId = prescriptionDTO.getAppointmentSlot().getId();
         Optional<AppointmentSlot> appointmentSlot = appointmentSlotRepository.findById(appointmentSlotId);
-        if (!appointmentSlot.isPresent()) {
-            return new CustomeResponseEntity<>(new CommonMessageDTO<>(StatusCode.NotFoundCode,
-                    "appointment with id " + appointmentSlotId + " does not exist!"), HttpStatus.NOT_FOUND);
-        }
-        int getStatus = appointmentSlot.get().getStatus();
-        //the healthcheck is not over
-        if (getStatus != 2) {
-            return new CustomeResponseEntity<>(new CommonMessageDTO<>(StatusCode.BadRequestCode,
-                    "The healthcheck is not over!"), HttpStatus.BAD_REQUEST);
-        }
+//        if (!appointmentSlot.isPresent()) {
+//            return new CustomeResponseEntity<>(new CommonMessageDTO<>(StatusCode.NotFoundCode,
+//                    "appointment with id " + appointmentSlotId + " does not exist!"), HttpStatus.NOT_FOUND);
+//        }
+//        int getStatus = appointmentSlot.get().getStatus();
+//        //the healthcheck is not over
+//        if (getStatus != 2) {
+//            return new CustomeResponseEntity<>(new CommonMessageDTO<>(StatusCode.BadRequestCode,
+//                    "The healthcheck is not over!"), HttpStatus.BAD_REQUEST);
+//        }
 
         Prescription prescription = Prescription.builder()
                 .diagnosis(prescriptionDTO.getDiagnosis())
@@ -67,21 +58,20 @@ public class PrescriptionService {
         //update appointmentslot
         appointmentSlot.get().setPrescription(prescription);
 
-        return new CustomeResponseEntity<>(new CommonMessageDTO<>(StatusCode.SuccessCode, "success"), HttpStatus.OK);
+        return prescription;
+
+        //return "OK";
+
+        //return new CustomeResponseEntity<>(new CommonMessageDTO<>(StatusCode.SuccessCode, "success"), HttpStatus.OK);
     }
 
     @Transactional
-    public CustomeResponseEntity<?> editPrescription(PrescriptionDTO.EditPrescription prescription) {
+    public Prescription editPrescription(PrescriptionDTO.EditPrescription prescription) {
         long prescriptionId = prescription.getId();
         Optional<Prescription> currentPrescription = prescriptionRepository.findById(prescriptionId);
-        if (!currentPrescription.isPresent()) {
-            return new CustomeResponseEntity(new CommonMessageDTO<>(StatusCode.NotFoundCode,
-                    "Prescription with id " + prescriptionId + " does not exist!"), HttpStatus.NOT_FOUND);
-        }
         currentPrescription.get().setDiagnosis(prescription.getDiagnosis());
         currentPrescription.get().setPrescriptionDescription(prescription.getPrescriptionDescription());
         currentPrescription.get().setMedicine(prescription.getMedicine());
-        return new CustomeResponseEntity<>(new CommonMessageDTO<>(StatusCode.SuccessCode,
-                "success"), HttpStatus.OK);
+        return currentPrescription.get();
     }
 }

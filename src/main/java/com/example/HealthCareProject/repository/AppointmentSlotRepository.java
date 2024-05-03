@@ -29,4 +29,6 @@ public interface AppointmentSlotRepository extends JpaRepository<AppointmentSlot
 
     Page<AppointmentSlot> findAppointmentSlotsByDoctorId(long doctorId, Pageable pageable); //ByDoctorId
 
+    long count();
+
 }
