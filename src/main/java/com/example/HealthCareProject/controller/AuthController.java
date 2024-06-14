@@ -54,7 +54,6 @@ public class AuthController {
 
     @Autowired
     JwtUtils jwtUtils;
-    private HttpServletResponse res = new Response();
 
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody UserDataDTO.LoginRequest loginRequest) {

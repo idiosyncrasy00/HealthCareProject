@@ -1,12 +1,5 @@
 package com.example.HealthCareProject.dto;
 
-import com.example.HealthCareProject.entity.Doctor;
-import com.example.HealthCareProject.entity.UserData;
-import com.example.HealthCareProject.entity.common.Common;
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import lombok.*;
 
 import java.io.Serializable;
@@ -32,6 +25,7 @@ public class DoctorDTO implements Serializable {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class ViewDoctorResponse implements Serializable {
+        private Long doctor_id;
         private String fullName;
         private String address;
         private String doctorType;
